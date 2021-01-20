@@ -352,7 +352,7 @@ header {
 	position: absolute;
 	top: 0;
 	left: 0;
-	padding: 40px 0;
+	padding: 1px 0;
 	z-index: 999999;
 	-webkit-transition: all .4s ease;
 	-moz-transition: all .4s ease;
@@ -481,6 +481,7 @@ nav ul li a {
 .about-img {
 	float: left;
 	width: 100%;
+	border-radius: 30%;
 }
 .about-img img {
 	width: 100%;
