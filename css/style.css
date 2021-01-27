@@ -478,6 +478,13 @@ nav ul li a {
 	float: left;
 	width: 100%;
 }
+/* .about-img-pp {
+	/* float: left; */
+	border-radius: 50%;
+	padding-left: -9999px;
+	left: 10px;
+
+} */
 .about-img {
 	float: left;
 	width: 100%;
