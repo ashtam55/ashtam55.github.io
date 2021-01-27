@@ -76,9 +76,27 @@ a:hover {
 .bg5 {
 	background-image: url(../images/bg5_2.png);
 }
-.price:hover {
-	background-image: url(../images/price-bg2.png);
+.price-1 {
+	background-image: url(../images/3-gray-tripsync.png);
 }
+.price-1:hover {
+	background-image: url(../images/3-gradient-ts.png);
+}
+ .price-2 {
+	background-image: url(../images/6-gray-ts.png);
+}
+.price-2:hover {
+	background-image: url(../images/6-gradient-ts.png);
+}
+.price-3 {
+	background-image: url(../images/9-gray-tripsync.png);
+}
+.price-3:hover {
+	background-image: url(../images/9-gradient-ts.png);
+}
+/* .price-4 {
+	background-image: url(../images/3-gray-tripsync.png);
+} */
 .user-comment:before {
 	background-image: url(../images/comm2.png);
 }

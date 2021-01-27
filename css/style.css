@@ -352,7 +352,7 @@ header {
 	position: absolute;
 	top: 0;
 	left: 0;
-	padding: 1px 0;
+	padding: 10px 0;
 	z-index: 999999;
 	-webkit-transition: all .4s ease;
 	-moz-transition: all .4s ease;
@@ -680,10 +680,10 @@ nav ul li a {
 	padding: 60px 10px 50px 10px;
 }
 .price:hover .price-head {
-	padding-top: 60px;
+	padding-top: 180px;
 }
 .price:hover > a {
-	background-color: #9c84e1;
+	background-color: #e184d1;
 	color: #fff;
 	border-color: transparent;
 }
@@ -691,6 +691,7 @@ nav ul li a {
 	float: left;
 	width: 100%;
 	margin-bottom: 20px;
+	padding-top: 170px;
 }
 .price-head h4 {
 	font-size: 18px;
