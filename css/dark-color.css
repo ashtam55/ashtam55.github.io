@@ -77,26 +77,26 @@ a:hover {
 	background-image: url(../images/bg5_2.png);
 }
 .price-1 {
-	background-image: url(../images/3-gray-tripsync.png);
+	background-image: url(../images/3-gray-slant.png);
 }
 .price-1:hover {
-	background-image: url(../images/3-gradient-ts.png);
+	background-image: url(../images/3-purple-slant.png);
 }
  .price-2 {
-	background-image: url(../images/6-gray-ts.png);
+	background-image: url(../images/6-gray-slant.png);
 }
 .price-2:hover {
-	background-image: url(../images/6-gradient-ts.png);
+	background-image: url(../images/6-purple-slant.png);
 }
 .price-3 {
-	background-image: url(../images/9-gray-tripsync.png);
+	background-image: url(../images/9-gray-slant.png);
 }
 .price-3:hover {
-	background-image: url(../images/9-gradient-ts.png);
+	background-image: url(../images/9-purple-slant.png);
 }
-/* .price-4 {
-	background-image: url(../images/3-gray-tripsync.png);
-} */
+.price-4 {
+	background-image: url(../images/paw.png);
+}
 .user-comment:before {
 	background-image: url(../images/comm2.png);
 }
