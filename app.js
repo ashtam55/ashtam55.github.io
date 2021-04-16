@@ -4,6 +4,7 @@
 //     ProcessImage();
 //   }, false);
 const video = document.getElementById('video')
+var statusText = document.getElementById('statusText');
 var globalImageData;
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
@@ -48,10 +49,12 @@ video.addEventListener('play', () => {
     if(!globalImageData.length){
 
         console.log("No image data to process");
+        statusText.innerText = "No Faces Detected";
     
     }
     else{
-        // ProcessImage(globalImageData );
+        statusText.innerText = "Processing Image";
+        ProcessImage(globalImageData );
     }
 
   },3000);
@@ -283,6 +286,7 @@ function checkLoop(){
 
   function checkingFaces(){
     console.log("Checking Faces");
+    statusText.innerText = "Checking in Database";
     AWS.region = "us-east-1";
     var rekognition = new AWS.Rekognition();
     // var params = {
@@ -328,7 +332,10 @@ function checkLoop(){
     //     }
     //     table += "</table>";
         // document.getElementById("opResult").innerHTML = table;
-        console.log(data);
+        console.log(data.FaceMatches[0].Face.ExternalImageId);
+        statusText.innerText = "Match Found -- "+ data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
+
+
       }
     });
   }
