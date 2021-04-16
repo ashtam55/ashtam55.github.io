@@ -36,7 +36,7 @@ video.addEventListener('play', () => {
 
     // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
     // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-  }, 100)
+  }, 1000)
   
   // actually extractFaces is meant to extract face regions from bounding boxes
   // but you can also use it to extract any other region

@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Rekognition</title>
-  <script src="aws-cognito-sdk.js"></script>
-  <script src="amazon-cognito-identity.min.js"></script>
-  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.16.0.min.js"></script>
+  <title>Document</title>
+  <script defer src="face-api.min.js"></script>
+  <script defer src="script.js"></script>
   <style>
     body {
       margin: 0;
@@ -29,19 +28,9 @@
       position: absolute;
     }
   </style>
-  
-  <!-- <script defer src="script.js"></script> -->
-  
 </head>
-
 <body>
-  <!-- <H1>Age Estimator</H1>
-  <input type="file" name="fileToUpload" id="fileToUpload" accept="image/*">
-  <p id="opResult"></p> -->
   <video id="video" width="720" height="560" autoplay muted></video>
   <img id="outputImage">
 </body>
-<script defer src="face-api.min.js"></script>
-<script defer src="./app.js"></script>
-
 </html>
