@@ -36,12 +36,12 @@ video.addEventListener('play', () => {
 
     const resizedDetections = faceapi.resizeResults(detections, displaySize)
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-    faceapi.draw.drawDetections(canvas, resizedDetections)
+    // faceapi.draw.drawDetections(canvas, resizedDetections)
     // extractFaceFromBox(video,resizedDetections[0].box)
 
     // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
     // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-  }, 3000)
+  }, 700)
   
   setInterval(async ()=>{
 
@@ -51,7 +51,7 @@ video.addEventListener('play', () => {
     
     }
     else{
-        ProcessImage(globalImageData );
+        // ProcessImage(globalImageData );
     }
 
   },3000);
