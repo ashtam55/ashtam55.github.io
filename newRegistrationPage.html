@@ -55,6 +55,28 @@
 			text-align: center;
 			/*padding-top: 40px;*/
 		}
+    h4{
+		 	width: 35%;
+			color: rgb(0, 0, 0);
+			font-size: 16px;
+			margin: 28px auto;
+			margin-bottom: 20px;
+			text-align: center;
+			/*padding-top: 40px;*/
+		}
+        h2{
+		 	width: 35%;
+			color: rgb(0, 0, 0);
+			font-size: 16px;
+			margin: 28px auto;
+			margin-bottom: 20px;
+			text-align: center;
+			/*padding-top: 40px;*/
+		}
+
+        #userName{
+            margin-left: 40vw;
+        }
         .container-output{
 			/* margin: 20px;
 			padding: 10px; */
@@ -66,9 +88,9 @@
             display: flex;
 			background-color: #fff;
 			border-radius: 5px;
-            top: 185px;
+            top: 32.5vh;
             position: absolute;
-            left: 297px;
+            left: 18vw;
 		}
     #outputImage{
       /* position: absolute;
@@ -87,7 +109,13 @@
 </head>
 
 <body>
-  <div> <H1>Touchless Attendance</H1><h3>Looking for Faces...</h3></div><!-- 
+  <div> <H1>Touchless Attendance</H1><h2>Registration Page</h2><h3>Looking for Faces...</h3><h4 id="statusText">Detecting</h4></div>
+
+  <div id="userName"><input type="text" placeholder="Full Name" id="name" ><button onclick="goToRegister()">Submit</button></div>
+  
+
+  
+  <!-- 
   <input type="file" name="fileToUpload" id="fileToUpload" accept="image/*">
   <p id="opResult"></p> -->
 
@@ -95,6 +123,7 @@
   <div class="container">
 
     <video id="video" width="720" height="560" autoplay muted></video>
+
 
     <!-- <h1>Login</h1>
 <form action="#" method="POST">
@@ -124,23 +153,14 @@
 
 <div class="container-button">
 
-  <button>New Registration</button>
+  <button onclick="location.href='index.html'" type="button">Home</button>
 
-  <!-- <h1>Login</h1>
-<form action="#" method="POST">
-  <input type="text" placeholder="username" class="field">
-  <input type="password" placeholder="password" class="field">
-  <input type="submit" value="login" class="btn">
-</form>
-<div class="pass-link">
-  <a href="#" >Lost your password?</a>
-</div>	 -->
 </div>
 
 
 
 </body>
-<!-- <script defer src="face-api.min.js"></script>
-<script defer src="./app.js"></script> -->
+<script defer src="face-api.min.js"></script>
+<script defer src="./app.js"></script>
 
 </html>

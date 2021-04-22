@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Rekognition</title>
+  <script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
   <script src="aws-cognito-sdk.js"></script>
   <script src="amazon-cognito-identity.min.js"></script>
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.16.0.min.js"></script>
@@ -79,6 +80,14 @@
             position: absolute;
             left: 297px;
 		}
+    .container-text{
+      width: 70%;
+			color: rgb(0, 0, 0);
+			font-size: 32px;
+			margin: 28px auto;
+			margin-bottom: 20px;
+			text-align: center;
+    }
     #outputImage{
       /* position: absolute;
       top: 200px;
@@ -130,6 +139,18 @@
     <a href="#" >Lost your password?</a>
 </div>	 -->
 </div>
+
+<div class="container-button">
+
+  <button onclick="location.href='newRegistrationPage.html'" type="button">New Registration</button>
+
+</div>
+<div class="container-text">
+
+ <span>Last Person Detected: </span><span id="personDetected"> </span>
+
+</div>
+
 
 
 </body>

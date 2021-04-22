@@ -26,21 +26,23 @@ video.addEventListener('play', () => {
   //   new faceapi.Rect(0, 0, 100, 100)
   // ]
   setInterval(async () => {
-    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-    extractFaceFromBox(video,detections[0].box);
+    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions().withFaceLandmarks()
+    .withFaceExpressions()
+    .withAgeAndGender());
+    // extractFaceFromBox(video,detections[0].box);
 
     const resizedDetections = faceapi.resizeResults(detections, displaySize)
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
     faceapi.draw.drawDetections(canvas, resizedDetections)
     // extractFaceFromBox(video,resizedDetections[0].box)
 
-    // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
-    // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-  }, 1000)
+    faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+    faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+  }, 100)
   
   // actually extractFaces is meant to extract face regions from bounding boxes
   // but you can also use it to extract any other region
-  Event.preventDefault();
+  // Event.preventDefault();
 
 })
 

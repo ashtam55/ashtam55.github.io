@@ -5,7 +5,23 @@
 //   }, false);
 const video = document.getElementById('video')
 var statusText = document.getElementById('statusText');
+var personDetected = document.getElementById('personDetected');
 var globalImageData;
+var width = 720, height = 560;  // camera image size
+
+var e_threshhold = 75;  // eyeClosure threshhold
+
+var faceMode = affdex.FaceDetectorMode.LARGE_FACES;  // face mode parameter
+
+// Initialize an Affectiva CameraDetector object
+var detector = new affdex.CameraDetector(video, width, height, faceMode);
+
+// Enable detection of specific Expressions classifiers.
+detector.detectExpressions.eyeClosure=true;
+
+// Set process rate
+detector.processFPS = 15
+
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
   faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
@@ -44,6 +60,9 @@ video.addEventListener('play', () => {
     // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
   }, 700)
   
+
+  detector.start();  // start detector 
+
   setInterval(async ()=>{
 
     if(!globalImageData.length){
@@ -53,8 +72,8 @@ video.addEventListener('play', () => {
     
     }
     else{
-        statusText.innerText = "Processing Image";
-        ProcessImage(globalImageData );
+        // statusText.innerText = "Processing Image";
+        // ProcessImage(globalImageData);
     }
 
   },3000);
@@ -63,6 +82,124 @@ video.addEventListener('play', () => {
 //   Event.preventDefault();
 
 })
+
+detector.addEventListener("onInitializeSuccess", function() {
+  console.log("The detector reports initialized");
+  //Display canvas instead of video feed because we want to draw the feature points on it
+  // $("#face_video_canvas").css("display", "block");
+  // $("#face_video").css("display", "none");
+
+  // TODO(optional): Call a function to initialize the game, if needed
+  // <your code here>
+});
+detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp) {
+  // console.log(faces[0].expressions.eyeClosure);
+  // var canvas = $('#face_video_canvas')[0];
+  if (!video)
+    return;
+
+  // Count results
+  // cnt_result += 1;
+
+  // Time interval
+  // t_prev = t_now;
+  // t_now = timestamp;
+  // interval = t_prev == null ? 0 : t_now - t_prev;
+  // data['interval'].push(parseInt(interval*1000));
+
+  // Report face metrics
+  // $('#results').html("");
+  // $('#appearance').html("");
+  // timestamp = timestamp.toFixed(1);
+  // data['timestamp'].push(timestamp);
+  // log('#appearance', "Timestamp: " + timestamp);
+  // log('#appearance', "Total results: " + cnt_result);
+  // log('#appearance', "Results/sec: " + (cnt_result/timestamp).toFixed(1));
+  // log('#appearance', "Faces found: " + faces.length);
+  if (faces.length > 0) {
+    // Report desired metrics
+    eyeClosure = parseInt(faces[0].expressions.eyeClosure);
+    // log('#appearance', "eyeClosure: " + eyeClosure);
+    // console.log("Eye Closure -- > ", eyeClosure);
+  
+
+    if(eyeClosure > e_threshhold){
+      statusText.innerText = "Real Face Confirmed"; 
+      console.log("Real Face Confirmed. Sending data to AWS now");        // ProcessImage(globalImageData);
+        ProcessImage(globalImageData);
+
+    }
+    else{
+      console.log("No Real Face Found");
+      statusText.innerText = "No Real Face Found. Try Blinking"; 
+    }
+    // Mark eye keypoint
+    // drawEye(video, image, faces[0]);/
+
+    // // Count blinks
+    // e_prev = e_now;
+    // e_now = eyeClosure<e_threshhold ? 0 : 1;
+    // if (t_prev != null && e_prev==1 && e_now==0) {
+    //   cnt_blink += 1;
+    // }
+    // $('#target').html(cnt_blink);
+    // if (cnt_blink>0) {
+    //   $('#score').html((timestamp/cnt_blink).toFixed(1) + ' sec/blink');
+    // }
+
+    // Add data
+    // data['eyeClosure'].push(eyeClosure);   
+  }
+  else {
+    console.log("No Face Found");
+
+    // append nan
+    // data['eyeClosure'].push(NaN);
+  }
+
+  // update chart
+  // myChart.setOption({
+  //   xAxis: {
+  //     data: data.timestamp
+  //   },      
+  //   series: [{
+  //     name: 'eyeClosure',
+  //     data: data.eyeClosure
+  //   }]
+  // });
+});
+
+
+// Draw eye feature points
+function drawEye(canvas, img, face) {
+  // Obtain a 2D context object to draw on the canvas
+  var ctx = canvas.getContext('2d');
+
+  // TODO: Set the stroke and/or fill style you want for each feature point marker
+  // See: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D#Fill_and_stroke_styles
+  ctx.strokeStyle="#FFF";
+  
+  // Loop over each feature point in the face  
+  // 16 Outer Right Eye
+  // 17 Inner Right Eye
+  // 18 Inner Left Eye
+  // 19 Outer Left Eye
+  // 30 Upper Corner Right Eye
+  // 31 Lower Corner Right Eye
+  // 32 Upper Corner Left Eye
+  // 33 Lower Corner Left Eye
+  eyepoints = [16, 17, 18, 19, 30, 31, 32, 33]
+  for (var id in eyepoints) {
+    var featurePoint = face.featurePoints[eyepoints[id]];
+
+    // TODO: Draw feature point, e.g. as a circle using ctx.arc()
+    // See: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc
+    ctx.beginPath();
+    ctx.arc(featurePoint['x'],featurePoint['y'],2,0,2*Math.PI);
+    ctx.stroke();
+  }
+}
+
 
 let outputImage = document.getElementById('outputImage')
 
@@ -126,7 +263,7 @@ function checkLoop(){
         Image: {
          S3Object: {
           Bucket: "djtfa", 
-          Name: "Ash.png"
+          Name: "Ash1.jpg"
          }
         }
        };
@@ -240,6 +377,7 @@ function checkLoop(){
         } else {
             console.log("Uploaded")
             checkingFaces();
+            // DetectFaces();
             // listObjs(); // this function will list all the files which has been uploaded
             //here you can also add your code to update your database(MySQL, firebase whatever you are using)
         }
@@ -284,6 +422,50 @@ function checkLoop(){
     // );
   }
 
+  function addPhotoForIndexing(imageData) {
+    // var params = {
+    //     Body: "test1", 
+    //     Bucket: "djtfa", 
+    //     Key: imageData, 
+    //     Metadata: {
+    //      "metadata1": "value1", 
+    //      "metadata2": "value2"
+    //     }
+    //    };
+    // var dataUrl = canvas.toDataURL("image/jpeg");
+    var blobData = dataURItoBlob(imageData);
+    // var params = {Key: "file_name", ContentType: "image/jpeg", Body: blobData};
+    // bucket.upload(params, function (err, data) {});
+
+       var bucketName = 'djtfa'; // Enter your bucket name
+    var bucket = new AWS.S3({
+        params: {
+            Bucket: bucketName
+        }
+    });
+       var params = {
+        ContentType:blobData.type,
+        Key: "indexed.jpg",
+        Body: blobData,
+        ACL: 'public-read'
+    };
+
+       bucket.putObject(params, function(err, data) {
+        if (err) {
+            // results.innerHTML = 'ERROR: ' + err;
+            console.log(err);
+        } else {
+            console.log("Successfully Uploaded for Indexing");
+            // checkingFaces();
+            addFaces();
+            // listObjs(); // this function will list all the files which has been uploaded
+            //here you can also add your code to update your database(MySQL, firebase whatever you are using)
+        }
+    });
+    
+  }
+
+
   function checkingFaces(){
     console.log("Checking Faces");
     statusText.innerText = "Checking in Database";
@@ -322,7 +504,10 @@ function checkLoop(){
        };
     // console.log(imageData);
     rekognition.searchFacesByImage(params, function (err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
+      if (err){
+        // console.log(err, err.stack);
+        statusText.innerText = "Match Not Found ";
+      } // an error occurred
       else {
     //    var table = "<table><tr><th>Low</th><th>High</th></tr>";
     //     // show each face and build out estimated age table
@@ -332,8 +517,17 @@ function checkLoop(){
     //     }
     //     table += "</table>";
         // document.getElementById("opResult").innerHTML = table;
-        console.log(data.FaceMatches[0].Face.ExternalImageId);
-        statusText.innerText = "Match Found -- "+ data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
+        if(data.FaceMatches[0]){
+          console.log(data.FaceMatches[0].Face.ExternalImageId);
+          console.log(data);
+          personDetected.innerText = data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
+
+        }
+        else{
+          // statusText.innerText = "Match Not Found ";
+          personDetected.innerText = "Match Not Found";
+
+        }
 
 
       }
@@ -369,17 +563,19 @@ function checkLoop(){
 //     });
 //   }
 function addFaces(){
+  var username = document.getElementById('name').value;
+  console.log('Adding User -->  ',username);
         AWS.region = "us-east-1";
     var rekognition = new AWS.Rekognition();
     var params = {
         CollectionId: "djtFaceData", 
         DetectionAttributes: [
         ], 
-        ExternalImageId: "ashtam", 
+        ExternalImageId: username, 
         Image: {
          S3Object: {
           Bucket: "djtfa", 
-          Name: "Ash.png"
+          Name: "indexed.jpg"
          }
         }
        };
@@ -483,4 +679,14 @@ console.log("Creating Collection");
       var secretAccessKey = AWS.config.credentials.secretAccessKey;
       var sessionToken = AWS.config.credentials.sessionToken;
     });
+  }
+
+
+  function goToRegister(){
+    AnonLog();
+    console.log("Registering New Faces");
+    // addPhoto(globalImageData);
+    addPhotoForIndexing(globalImageData);
+
+  
   }
