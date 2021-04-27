@@ -5,6 +5,12 @@
 //   }, false);
 const video = document.getElementById('video')
 var statusText = document.getElementById('statusText');
+var onFaceDetect = document.getElementById('fd');
+var onProcessing = document.getElementById('pro');
+var onSucess = document.getElementById('suc');
+
+var submitButton = document.getElementById('submitButton');
+
 var personDetected = document.getElementById('personDetected');
 var globalImageData;
 var width = 720, height = 560;  // camera image size
@@ -68,10 +74,13 @@ video.addEventListener('play', () => {
     if(!globalImageData.length){
 
         console.log("No image data to process");
-        statusText.innerText = "No Faces Detected";
+        // statusText.innerText = "No Faces Detected";
+        // onFaceDetect.setAttribute("style", "color:gray;");
     
     }
     else{
+      // onFaceDetect.setAttribute("style", "color:green;");
+
         // statusText.innerText = "Processing Image";
         // ProcessImage(globalImageData);
     }
@@ -124,14 +133,19 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
   
 
     if(eyeClosure > e_threshhold){
-      statusText.innerText = "Real Face Confirmed"; 
+      // statusText.innerText = "Real Face Confirmed"; 
+      onFaceDetect.style.backgroundColor = "green";
+
       console.log("Real Face Confirmed. Sending data to AWS now");        // ProcessImage(globalImageData);
         ProcessImage(globalImageData);
 
     }
     else{
+      // onFaceDetect.setAttribute("style", "color:gray;");
+      // onFaceDetect.style.backgroundColor = 'gray';
+
       console.log("No Real Face Found");
-      statusText.innerText = "No Real Face Found. Try Blinking"; 
+      // statusText.innerText = "No Real Face Found. Try Blinking"; 
     }
     // Mark eye keypoint
     // drawEye(video, image, faces[0]);/
@@ -343,6 +357,9 @@ function checkLoop(){
 }
 
   function addPhoto(imageData) {
+
+    // onProcessing.style.backgroundColor = "green";
+
     // var params = {
     //     Body: "test1", 
     //     Bucket: "djtfa", 
@@ -375,7 +392,7 @@ function checkLoop(){
             // results.innerHTML = 'ERROR: ' + err;
             console.log(err);
         } else {
-            console.log("Uploaded")
+            console.log("Uploaded");
             checkingFaces();
             // DetectFaces();
             // listObjs(); // this function will list all the files which has been uploaded
@@ -468,7 +485,7 @@ function checkLoop(){
 
   function checkingFaces(){
     console.log("Checking Faces");
-    statusText.innerText = "Checking in Database";
+    // statusText.innerText = "Checking in Database";
     AWS.region = "us-east-1";
     var rekognition = new AWS.Rekognition();
     // var params = {
@@ -506,7 +523,7 @@ function checkLoop(){
     rekognition.searchFacesByImage(params, function (err, data) {
       if (err){
         // console.log(err, err.stack);
-        statusText.innerText = "Match Not Found ";
+        // statusText.innerText = "Match Not Found ";
       } // an error occurred
       else {
     //    var table = "<table><tr><th>Low</th><th>High</th></tr>";
@@ -518,9 +535,11 @@ function checkLoop(){
     //     table += "</table>";
         // document.getElementById("opResult").innerHTML = table;
         if(data.FaceMatches[0]){
-          console.log(data.FaceMatches[0].Face.ExternalImageId);
-          console.log(data);
-          personDetected.innerText = data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
+          // document.getElementById('suc').style.backgroundColor = "green";
+          // console.log(data.FaceMatches[0].Face.ExternalImageId);
+          // console.log(data);
+          // personDetected.innerText = data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
+          myCreateFunction(data.FaceMatches[0].Face.ExternalImageId,data.FaceMatches[0].Face.Confidence);
 
         }
         else{
@@ -563,7 +582,7 @@ function checkLoop(){
 //     });
 //   }
 function addFaces(){
-  var username = document.getElementById('name').value;
+  var username = document.getElementById('fname').value;
   console.log('Adding User -->  ',username);
         AWS.region = "us-east-1";
     var rekognition = new AWS.Rekognition();
@@ -581,7 +600,7 @@ function addFaces(){
        };
        rekognition.indexFaces(params, function(err, data) {
          if (err) console.log(err, err.stack); // an error occurred
-         else     console.log(data);           // successful response
+         else     console.log(data);   alert("Face Added Successfully");        // successful response
          
        });
 }
@@ -690,3 +709,83 @@ console.log("Creating Collection");
 
   
   }
+
+
+  //Tables
+
+  var table = document.getElementById("myTable");
+
+  function myCreateFunction(name,accuracy) {
+
+    var i = table.rows.length;
+    var row = table.insertRow(i);
+  
+    for (var j = 0; j < table.rows[0].cells.length - 1; j++) {
+      var cell = row.insertCell(j);
+
+      if(j == 0){
+        cell.innerHTML = name;
+      }
+      else if(j == 1){
+        cell.innerHTML = accuracy;
+
+      }
+      
+      // table.rows[i].cells[j].addEventListener("click", function() {
+      //   editText(this);
+      // }, false);
+    }
+    var d = new Date();
+var epoch = d.getTime();
+    var cell = row.insertCell(row.cells.length);
+    cell.innerHTML = epoch;
+    // cell.classList.add("delete_row");
+    // // cell.addEventListener("click", function() {
+    // //   deleteRow(this);
+    // // }, false);
+  }
+  
+
+  // myCreateFunction("ashtam","12");
+
+
+  document.getElementById("showRegister").addEventListener("click", function() {
+    // document.getElementById("demo").innerHTML = "Hello World";
+    console.log("sad");
+
+    // document.querySelectorAll('.formDiv')[0].
+    // style.display = 'hidden';
+
+    // document.querySelectorAll('.currentFaceDetail')[0].
+    // style.display = 'inline-block';
+    document.getElementsByClassName('formDiv')[0].style.visibility = 'visible';
+    document.getElementsByClassName('currentFaceDetail')[0].style.visibility = 'hidden';
+  });
+
+
+  document.getElementById("showDetection").addEventListener("click", function() {
+    // document.getElementById("demo").innerHTML = "Hello World";
+    console.log("happuy");
+
+    // document.querySelectorAll('.formDiv')[0].
+    // style.visibility = 'inline-block';
+
+    // document.querySelectorAll('.currentFaceDetail')[0].
+    // style.visibility = 'hidden';
+    document.getElementsByClassName('formDiv')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('currentFaceDetail')[0].style.visibility = 'visible';
+  });
+
+  // document.getElementById("showDetection").addEventListener("click", function() {
+  //   // document.getElementById("demo").innerHTML = "Hello World";
+  //   console.log("happy");
+
+  //   document.getElementsByClassName('currentFaceDetail')[0].style.visibility = 'block';
+  //   document.getElementsByClassName('formDiv')[0].style.visibility = 'hidden';
+  // });
+
+submitButton.addEventListener("click",function(){
+var userName = document.getElementById("fname").value;
+console.log("Submit clicked",userName);
+goToRegister();
+});

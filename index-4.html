@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Rekognition</title>
+  <script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
+  <script src="aws-cognito-sdk.js"></script>
+  <script src="amazon-cognito-identity.min.js"></script>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.16.0.min.js"></script>
+  <style>
+    /* body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    } */
+    *{
+			box-sizing: border-box;
+		}
+		body{
+			background-color: #3498DB;
+			font-family: "Arial", sans-serif;
+			padding: 50px;
+		}
+		.container{
+			margin: 20px auto;
+			padding: 10px;
+			width: 800px;
+			height: 600px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+			background-color: #fff;
+			border-radius: 5px;
+		}
+		 h1{
+		 	width: 70%;
+			color: rgb(0, 0, 0);
+			font-size: 32px;
+			margin: 28px auto;
+			margin-bottom: 20px;
+			text-align: center;
+			/*padding-top: 40px;*/
+		}
+        h3{
+		 	width: 35%;
+			color: rgb(0, 0, 0);
+			font-size: 16px;
+			margin: 28px auto;
+			margin-bottom: 20px;
+			text-align: center;
+			/*padding-top: 40px;*/
+		}
+    h4{
+		 	width: 35%;
+			color: rgb(0, 0, 0);
+			font-size: 16px;
+			margin: 28px auto;
+			margin-bottom: 20px;
+			text-align: center;
+			/*padding-top: 40px;*/
+		}
+        .container-output{
+			/* margin: 20px;
+			padding: 10px; */
+            margin-right: 0px;
+			width: 225px;
+			height: 225px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+			background-color: #fff;
+			border-radius: 5px;
+            top: 231px;
+            position: absolute;
+            left: 297px;
+		}
+    .container-table{
+			/* margin: 20px;
+			padding: 10px; */
+            margin-right: 0px;
+
+            justify-content: center;
+            align-items: center;
+            display: flex;
+			background-color: #fff;
+			border-radius: 5px;
+            top: 24vh;
+            position: absolute;
+            left: 71vw;
+		}
+    .container-text{
+      width: 70%;
+			color: rgb(0, 0, 0);
+			font-size: 32px;
+			margin: 28px auto;
+			margin-bottom: 20px;
+			text-align: center;
+    }
+    #outputImage{
+      /* position: absolute;
+      top: 200px;
+      left: 100px; */
+    }
+
+    canvas {
+      position: absolute;
+    }
+
+    .table-bordered {
+  border-width: 1px 1px 1px 0px;
+  border-style: solid solid solid none;
+  border-color: #DDD #DDD #DDD -moz-use-text-color;
+  border-collapse: collapse;
+  border-radius: 4px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.table-bordered th,
+.table-bordered td {
+  min-width: 150px;
+  padding: 8px;
+  line-height: 20px;
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid #DDD;
+}
+
+.table-bordered th {
+  background-color: #006A72;
+  color: #ffffff;
+}
+   
+  </style>
+  
+  <!-- <script defer src="script.js"></script> -->
+  
+</head>
+
+<body>
+  <div> <H1>Touchless Attendance</H1><h3>Looking for Faces...</h3><h4 id="statusText">Detecting</h4></div><!-- 
+  <input type="file" name="fileToUpload" id="fileToUpload" accept="image/*">
+  <p id="opResult"></p> -->
+
+
+  <div class="container">
+
+    <video id="video" width="720" height="560" autoplay muted></video>
+
+    <!-- <h1>Login</h1>
+<form action="#" method="POST">
+    <input type="text" placeholder="username" class="field">
+    <input type="password" placeholder="password" class="field">
+    <input type="submit" value="login" class="btn">
+</form>
+<div class="pass-link">
+    <a href="#" >Lost your password?</a>
+</div>	 -->
+</div>
+
+<div class="container-output">
+
+    <img id="outputImage">
+
+    <!-- <h1>Login</h1>
+<form action="#" method="POST">
+    <input type="text" placeholder="username" class="field">
+    <input type="password" placeholder="password" class="field">
+    <input type="submit" value="login" class="btn">
+</form>
+<div class="pass-link">
+    <a href="#" >Lost your password?</a>
+</div>	 -->
+</div>
+
+<div class="container-button">
+
+  <button onclick="location.href='newRegistrationPage.html'" type="button">New Registration</button>
+
+</div>
+<!-- <div class="container-text">
+
+ <span>Last Person Detected: </span><span id="personDetected"> </span>
+
+</div> -->
+<div class="container-table">
+  <table id="myTable" class="table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Accuracy</th>
+        <th>TimeStamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+  </table>
+  
+  
+  
+    
+</div>
+
+
+</body>
+<script defer src="face-api.min.js"></script>
+<script defer src="./app.js"></script>
+
+</html>
