@@ -197,6 +197,9 @@ input, select, textarea {
   border-collapse: collapse;
   border-radius: 4px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  max-height: 100px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .table-bordered th,
@@ -214,7 +217,15 @@ input, select, textarea {
   color: #ffffff;
 }
 
-.pro{
+.table-bordered {
+  /* width: 100%; */ /* Optional */
+  /* border-collapse: collapse; */
+  border-spacing: 0;
+  border: 2px solid black;
+}
+
+
+#pro{
   display: inline;
   width: 15px;
   height: 15px;
@@ -226,7 +237,7 @@ input, select, textarea {
     left: 6vw;
 }
 
-  .suc{
+  #suc{
     display: inline;
     width: 15px;
     height: 15px;

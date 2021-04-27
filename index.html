@@ -46,8 +46,8 @@
 
   <h4>Face Detected</h4> <span id="fd"></span>
  
-  <h4>Processing</h4><span class="pro"></span>
-  <h4>Success</h4><span class="suc"></span>
+  <h4>Processing</h4><span id="pro"></span>
+  <h4>Success</h4><span id="suc"></span>
 </div>
     <div class="formDiv">
         <h1>Registration Form</h1>
@@ -68,7 +68,8 @@
 
     <div class="currentFaceDetail">
         <h1>Detected Face Details</h1>
-        <div class="container-table">
+        <h5>*Try Blinking for faster results</h5>
+        <div class="container-table" style="overflow-y: scroll; height:400px;">
           <table id="myTable" class="table-bordered" >
             <thead>
               <tr>

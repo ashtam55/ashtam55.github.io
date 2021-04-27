@@ -64,28 +64,28 @@ video.addEventListener('play', () => {
 
     // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
     // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-  }, 700)
+  }, 100)
   
 
   detector.start();  // start detector 
 
-  setInterval(async ()=>{
+  // setInterval(async ()=>{
 
-    if(!globalImageData.length){
+  //   if(!globalImageData.length){
 
-        console.log("No image data to process");
-        // statusText.innerText = "No Faces Detected";
-        // onFaceDetect.setAttribute("style", "color:gray;");
+  //       console.log("No image data to process");
+  //       // statusText.innerText = "No Faces Detected";
+  //       // onFaceDetect.setAttribute("style", "color:gray;");
     
-    }
-    else{
-      // onFaceDetect.setAttribute("style", "color:green;");
+  //   }
+  //   else{
+  //     // onFaceDetect.setAttribute("style", "color:green;");
 
-        // statusText.innerText = "Processing Image";
-        // ProcessImage(globalImageData);
-    }
+  //       // statusText.innerText = "Processing Image";
+  //       // ProcessImage(globalImageData);
+  //   }
 
-  },3000);
+  // },3000);
   // actually extractFaces is meant to extract face regions from bounding boxes
   // but you can also use it to extract any other region
 //   Event.preventDefault();
@@ -131,20 +131,26 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
     // log('#appearance', "eyeClosure: " + eyeClosure);
     // console.log("Eye Closure -- > ", eyeClosure);
   
-
-    if(eyeClosure > e_threshhold){
+    var isRegisterPageVisible = document.getElementsByClassName('formDiv')[0].style.visibility;
+    
+    if(eyeClosure > e_threshhold && isRegisterPageVisible == "hidden"){
       // statusText.innerText = "Real Face Confirmed"; 
-      onFaceDetect.style.backgroundColor = "green";
+      // onFaceDetect.style.backgroundColor = "green";
 
-      console.log("Real Face Confirmed. Sending data to AWS now");        // ProcessImage(globalImageData);
-        ProcessImage(globalImageData);
+      onProcessing.style.backgroundColor = "green";
+        ProcessImage(globalImageData)
+        .then( (message)=>{
+          // console.log(message);
+          addPhoto(message);
+        }    
+        );
 
     }
     else{
       // onFaceDetect.setAttribute("style", "color:gray;");
       // onFaceDetect.style.backgroundColor = 'gray';
 
-      console.log("No Real Face Found");
+      // console.log("No Real Face Found");
       // statusText.innerText = "No Real Face Found. Try Blinking"; 
     }
     // Mark eye keypoint
@@ -165,7 +171,7 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
     // data['eyeClosure'].push(eyeClosure);   
   }
   else {
-    console.log("No Face Found");
+    // console.log("No Face Found");
 
     // append nan
     // data['eyeClosure'].push(NaN);
@@ -239,6 +245,8 @@ async function extractFaceFromBox(inputImage, box){
             // var image = cnv.toDataURL();
             outputImage.src = image;
             globalImageData = image;
+            onFaceDetect.style.backgroundColor = "green";
+
             // checkFaces();
             // DetectFaces();
 
@@ -285,67 +293,10 @@ function checkLoop(){
     rekognition.detectFaces(params, function (err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else {
-    //    var table = "<table><tr><th>Low</th><th>High</th></tr>";
-    //     // show each face and build out estimated age table
-    //     for (var i = 0; i < data.FaceDetails.length; i++) {
-    //       table += '<tr><td>' + data.FaceDetails[i].AgeRange.Low +
-    //         '</td><td>' + data.FaceDetails[i].AgeRange.High + '</td></tr>';
-    //     }
-    //     table += "</table>";
-        // document.getElementById("opResult").innerHTML = table;
         console.log(data);
       }
     });
-    //     var albumName = "djtfa";
-    //   var files = imageData;
-    //   if (!files.length) {
-    //     return alert("Please choose a file to upload first.");
-    //   }
-    //   var file = imageData;
-    //   var fileName = "Test1.png";
-    //   var albumPhotosKey = encodeURIComponent(albumName) + "/";
-    
-    //   var photoKey = albumPhotosKey + fileName;
-    
-    //   Use S3 ManagedUpload class as it supports multipart uploads
-    //   var upload = new AWS.Rekognition.detectFaces({
-    //     params: {
-    //         Image: {
-    //         S3Object: {
-    //          Bucket: "djtfa", 
-    //          Name: "Test1.png"
-    //         }
-    //        }
-    //     }
-    //   });
-    
-    //   var promise = upload.promise();
-    
-    //   promise.then(
-    //     function(data) {
-    //     //   alert("Successfully uploaded photo.");
-    //     //   viewAlbum(albumName);
-    //             console.log(data);
-    //     },
-    //     function(err) {
-    //       return alert("There was an error uploading your photo: ", err.message);
-    //     }
-    //   );
-
-    // var params = {
-    //     Image: {
-    //      S3Object: {
-    //       Bucket: "mybucket", 
-    //       Name: "myphoto"
-    //      }
-    //     }
-    //    };
-    //    rekognition.detectFaces(params, function(err, data) {
-    //      if (err) console.log(err, err.stack); // an error occurred
-    //      else     console.log(data);
-
-
-    //    });
+   
   }
   function dataURItoBlob(dataURI) {
     var binary = atob(dataURI.split(',')[1]);
@@ -357,6 +308,7 @@ function checkLoop(){
 }
 
   function addPhoto(imageData) {
+    console.log("Real Face Confirmed. Sending data to S3 now");        // ProcessImage(globalImageData);
 
     // onProcessing.style.backgroundColor = "green";
 
@@ -392,51 +344,20 @@ function checkLoop(){
             // results.innerHTML = 'ERROR: ' + err;
             console.log(err);
         } else {
-            console.log("Uploaded");
-            checkingFaces();
+            console.log("S3 Uploaded Success");
+            // return Promise.resolve("S3 Uploaded Success");
+            
+            
+              setTimeout(checkingFaces(), 1000);
+    
+    
+            
             // DetectFaces();
             // listObjs(); // this function will list all the files which has been uploaded
             //here you can also add your code to update your database(MySQL, firebase whatever you are using)
         }
     });
-    //    AWS.S3.putObject(params, function(err, data) {
-    //      if (err) console.log(err, err.stack); // an error occurred
-    //      else     console.log(data);           // successful response
-         
-    //    });
-       
-    //   var albumName = "djtfa";
-    // var files = imageData;
-    // if (!files.length) {
-    //   return alert("Please choose a file to upload first.");
-    // }
-    // var file = imageData;
-    // var fileName = "Test1.png";
-    // var albumPhotosKey = encodeURIComponent(albumName) + "/";
-  
-    // var photoKey = albumPhotosKey + fileName;
-  
-    // Use S3 ManagedUpload class as it supports multipart uploads
-    // var upload = new AWS.S3.ManagedUpload({
-    //   params: {
-    //     Bucket: albumName,
-    //     Key: photoKey,
-    //     Body: file
-    //   }
-    // });
-  
-    // var promise = upload.promise();
-  
-    // promise.then(
-    //   function(data) {
-    //     console.log("Successfully uploaded photo.");
-    //     // viewAlbum(albumName);
-    //     checkingFaces();
-    //   },
-    //   function(err) {
-    //     return alert("There was an error uploading your photo: ", err.message);
-    //   }
-    // );
+    
   }
 
   function addPhotoForIndexing(imageData) {
@@ -474,12 +395,63 @@ function checkLoop(){
         } else {
             console.log("Successfully Uploaded for Indexing");
             // checkingFaces();
-            addFaces();
+
+            checkFaceBeforeIndexing();
+            // addFaces();
             // listObjs(); // this function will list all the files which has been uploaded
             //here you can also add your code to update your database(MySQL, firebase whatever you are using)
         }
     });
     
+  }
+
+  function checkFaceBeforeIndexing(){
+    console.log("Checking Faces Before Uploading");
+    // statusText.innerText = "Checking in Database";
+    AWS.region = "us-east-1";
+    var rekognition = new AWS.Rekognition();
+    
+       var params = {
+        CollectionId: "djtFaceData", 
+        FaceMatchThreshold: 95, 
+        Image: {
+         S3Object: {
+          Bucket: "djtfa", 
+          Name: "indexed.jpg"
+         }
+        }, 
+        MaxFaces: 1
+       };
+    // console.log(imageData);
+    rekognition.searchFacesByImage(params, function (err, data) {
+      if (err){
+        console.log("Face Not Exists, Not Adding");
+
+        // console.log(err, err.stack);
+        // statusText.innerText = "Match Not Found ";
+      } // an error occurred
+      else {
+        if(data.FaceMatches[0]){
+          console.log("Face Already Exists");
+          alert("Face already Exists");
+          // document.getElementById('suc').style.backgroundColor = "green";
+          // console.log(data.FaceMatches[0].Face.ExternalImageId);
+          // console.log(data);
+          // personDetected.innerText = data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
+          // myCreateFunction(data.FaceMatches[0].Face.ExternalImageId,data.FaceMatches[0].Face.Confidence);
+
+        }
+        else{
+          console.log("Face Not Exists, Adding");
+          addFaces();
+          // statusText.innerText = "Match Not Found ";
+          // personDetected.innerText = "Match Not Found";
+
+        }
+
+
+      }
+    });
   }
 
 
@@ -510,14 +482,14 @@ function checkLoop(){
     //    };
        var params = {
         CollectionId: "djtFaceData", 
-        FaceMatchThreshold: 95, 
+        FaceMatchThreshold: 99, 
         Image: {
          S3Object: {
           Bucket: "djtfa", 
           Name: "Ash1.jpg"
          }
         }, 
-        MaxFaces: 5
+        MaxFaces: 1
        };
     // console.log(imageData);
     rekognition.searchFacesByImage(params, function (err, data) {
@@ -539,12 +511,21 @@ function checkLoop(){
           // console.log(data.FaceMatches[0].Face.ExternalImageId);
           // console.log(data);
           // personDetected.innerText = data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
+          onSucess.style.backgroundColor = "green";
           myCreateFunction(data.FaceMatches[0].Face.ExternalImageId,data.FaceMatches[0].Face.Confidence);
+          onProcessing.style.backgroundColor = "gray";
+          onFaceDetect.style.backgroundColor = "gray";
+          onSucess.style.backgroundColor = "gray";
+          
+          setTimeout(deleteFile(), 3000);
 
+          
+          // return Promise.resolve("Success Deleting File");
         }
         else{
+          alert("Face not found - Go to Register page");
           // statusText.innerText = "Match Not Found ";
-          personDetected.innerText = "Match Not Found";
+          // personDetected.innerText = "Match Not Found";
 
         }
 
@@ -604,6 +585,63 @@ function addFaces(){
          
        });
 }
+
+function deleteFile() {
+  // var bucketInstance = new AWS.S3();
+  // var params = {
+  //     Bucket: 'djtfa',
+  //     Key: 'Ash1.jpg'
+  // };
+  // bucketInstance.deleteObject(params, function (err, data) {
+  //     if (data) {
+  //         console.log("File deleted successfully");
+  //     }
+  //     else {
+  //         console.log("Check if you have sufficient permissions : "+err);
+  //     }
+  // });
+  // AnonLog();
+
+
+//  var params = {
+//   Bucket: "examplebucket", 
+//   Key: "objectkey.jpg"
+//  };
+//  s3.deleteObject(params, function(err, data) {
+//    if (err) console.log(err, err.stack); // an error occurred
+//    else     console.log(data);           // successful response
+//    /*
+//    data = {
+//    }
+//    */
+//  });
+AnonLog();
+  var bucketName = 'djtfa'; // Enter your bucket name
+  var bucket = new AWS.S3({
+      params: {
+          Bucket: bucketName
+      }
+  });
+     var params = {
+      Key: "Ash1.jpg",
+  };
+
+     bucket.deleteObject(params, function(err, data) {
+      if (err) {
+          // results.innerHTML = 'ERROR: ' + err;
+          console.log(err);
+      } else {
+          console.log("Successfully Deleted file");
+          // checkingFaces();
+
+          // checkFaceBeforeIndexing();
+          // addFaces();
+          // listObjs(); // this function will list all the files which has been uploaded
+          //here you can also add your code to update your database(MySQL, firebase whatever you are using)
+      }
+  });
+}
+
 function createCollection(){
     AWS.region = "us-east-1";
     var rekognition = new AWS.Rekognition();
@@ -626,58 +664,9 @@ console.log("Creating Collection");
   //Loads selected image and unencodes image bytes for Rekognition DetectFaces API
   function ProcessImage(image) {
     AnonLog();
-    var control = document.getElementById("fileToUpload");
-    // var file = control.files[0];
-    var file = image;
-    // console.log(file);
-    // checkingFaces();
-    //Upload image to S3
-   
-    addPhoto(image);
+    return Promise.resolve(image);
 
 
-    // DetectFaces();
-
-    // createCollection();
-
-// addFaces();
-
-    // DetectFaces(image);
-    // Load base64 encoded image 
-    var reader = new FileReader();
-    // reader.onload = (function (theFile) {
-    //   return function (e) {
-    //     var img = document.createElement('img');
-    //     var image = null;
-    //     img.src = e.target.result;
-    //     var jpg = true;
-    //     try {
-    //       image = atob(e.target.result.split("data:image/jpeg;base64,")[1]);
-
-    //     } catch (e) {
-    //       jpg = false;
-    //     }
-    //     if (jpg == false) {
-    //       try {
-    //         image = atob(e.target.result.split("data:image/png;base64,")[1]);
-    //         console.log(image);
-    //       } catch (e) {
-    //         alert("Not an image file Rekognition can process");
-    //         return;
-    //       }
-    //     }
-    //     //unencode image bytes for Rekognition DetectFaces API 
-    //     var length = image.length;
-    //     imageBytes = new ArrayBuffer(length);
-    //     var ua = new Uint8Array(imageBytes);
-    //     for (var i = 0; i < length; i++) {
-    //       ua[i] = image.charCodeAt(i);
-    //     }
-    //     //Call Rekognition  
-    //     // DetectFaces(imageBytes);
-    //   };
-    // })(file);
-    // reader.readAsDataURL(file);
   }
   //Provides anonymous log on to AWS services
   function AnonLog() {
