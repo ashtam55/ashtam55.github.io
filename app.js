@@ -13,6 +13,7 @@ var submitButton = document.getElementById('submitButton');
 
 var personDetected = document.getElementById('personDetected');
 var globalImageData;
+var globalCanvasData;
 var width = 720, height = 560;  // camera image size
 
 var e_threshhold = 75;  // eyeClosure threshhold
@@ -47,7 +48,8 @@ function startVideo() {
 video.addEventListener('play', () => {
   const canvas = faceapi.createCanvasFromMedia(video)
   document.body.append(canvas)
-  
+  globalCanvasData = canvas.toDataURL('image/jpeg');
+          
   const displaySize = { width: video.width, height: video.height }
   faceapi.matchDimensions(canvas, displaySize)
   // const regionsToExtract = [
@@ -141,7 +143,7 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
         ProcessImage(globalImageData)
         .then( (message)=>{
           // console.log(message);
-          addPhoto(message);
+          addPhoto(message,"Ash1",1);
         }    
         );
 
@@ -307,8 +309,8 @@ function checkLoop(){
     return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
 }
 
-  function addPhoto(imageData) {
-    console.log("Real Face Confirmed. Sending data to S3 now");        // ProcessImage(globalImageData);
+  function addPhoto(imageData,key,countine) {
+    console.log("Adding photo to", key);        // ProcessImage(globalImageData);
 
     // onProcessing.style.backgroundColor = "green";
 
@@ -334,7 +336,7 @@ function checkLoop(){
     });
        var params = {
         ContentType:blobData.type,
-        Key: "Ash1.jpg",
+        Key: key+".jpg",
         Body: blobData,
         ACL: 'public-read'
     };
@@ -344,11 +346,12 @@ function checkLoop(){
             // results.innerHTML = 'ERROR: ' + err;
             console.log(err);
         } else {
-            console.log("S3 Uploaded Success");
+            console.log("S3 Uploaded Success", key);
             // return Promise.resolve("S3 Uploaded Success");
             
-            
-              setTimeout(checkingFaces(), 1000);
+              if(countine == 1){
+                setTimeout(checkingFaces(), 1000);
+              }
     
     
             
@@ -517,7 +520,8 @@ function checkLoop(){
           onFaceDetect.style.backgroundColor = "gray";
           onSucess.style.backgroundColor = "gray";
           
-          setTimeout(deleteFile(), 3000);
+          savePresenceToS3(data.FaceMatches[0].Face.ExternalImageId);
+          // setTimeout(deleteFile(), 3000);
 
           
           // return Promise.resolve("Success Deleting File");
@@ -532,6 +536,18 @@ function checkLoop(){
 
       }
     });
+  }
+
+
+  function savePresenceToS3(userName){
+    globalCanvasData
+    var key;
+    var d = new Date();
+    var epoch = d.getTime();
+    key = "FaceAttendace/"+userName + "-" + epoch;
+    addPhoto(globalImageData,key,0);
+    
+    
   }
 
 //   function uploadToS3(imageData){
@@ -778,3 +794,6 @@ var userName = document.getElementById("fname").value;
 console.log("Submit clicked",userName);
 goToRegister();
 });
+
+
+
