@@ -436,6 +436,8 @@ function checkLoop(){
       else {
         if(data.FaceMatches[0]){
           console.log("Face Already Exists");
+          onSucess.style.backgroundColor = "green";
+
           alert("Face already Exists");
           // document.getElementById('suc').style.backgroundColor = "green";
           // console.log(data.FaceMatches[0].Face.ExternalImageId);
@@ -447,10 +449,18 @@ function checkLoop(){
         else{
           console.log("Face Not Exists, Adding");
           addFaces();
+          onSucess.style.backgroundColor = "green";
+
           // statusText.innerText = "Match Not Found ";
           // personDetected.innerText = "Match Not Found";
 
         }
+
+        setTimeout(function(){
+          onProcessing.style.backgroundColor = "gray";
+          onFaceDetect.style.backgroundColor = "gray";
+          onSucess.style.backgroundColor = "gray";
+         },1000);
 
 
       }
@@ -610,8 +620,14 @@ function getFullDate(){
 //         console.log("Progress --> ",uploaded);
 //     });
 //   }
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 function addFaces(){
-  var username = document.getElementById('fname').value;
+  var firstName = capitalizeFirstLetter(document.getElementById('fname').value);
+  var lastName = capitalizeFirstLetter(document.getElementById('lname').value);
+  var username = firstName+lastName;
+
   console.log('Adding User -->  ',username);
         AWS.region = "us-east-1";
     var rekognition = new AWS.Rekognition();
@@ -742,6 +758,8 @@ console.log("Creating Collection");
     AnonLog();
     console.log("Registering New Faces");
     // addPhoto(globalImageData);
+    onProcessing.style.backgroundColor = "green";
+
     addPhotoForIndexing(globalImageData);
 
   
