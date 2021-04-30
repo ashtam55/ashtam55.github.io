@@ -4,13 +4,38 @@
     <!-- **DO THIS**: -->
     <!--   Replace SDK_VERSION_NUMBER with the current SDK version number -->
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.16.0.min.js"></script>
-    <script src="./PhotoViewer.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.4.2/firebase.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-analytics.js"></script>
+<script src="./PhotoViewer.js"></script>
+
     <!-- <script>listAlbums();</script> -->
     <link rel="stylesheet" href="styles1.css">
 
   </head>
   <body>
     <h1>DJT Attendance Viewer</h1>
-    <div id="viewer" />
+    <label for="birthday">Select Date to view Attendance:</label>
+    <input type="date" id="ad" name="ad">
+    <input onclick="getUserSubmittedDate()" type="submit">
+    <div id="viewer">
+      <table id="employeeTable" class="table-bordered" >
+        <thead>
+          <tr>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+
+    </div>>
+    <div id="results"> </div>
+    <div id="stime"> </div>
+    <div id="etime"> </div>
   </body>
 </html>

@@ -515,12 +515,16 @@ function checkLoop(){
           // console.log(data);
           // personDetected.innerText = data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
           onSucess.style.backgroundColor = "green";
+          savePresenceToS3(data.FaceMatches[0].Face.ExternalImageId);
           myCreateFunction(data.FaceMatches[0].Face.ExternalImageId,data.FaceMatches[0].Face.Confidence);
+
+          
+         setTimeout(function(){
           onProcessing.style.backgroundColor = "gray";
           onFaceDetect.style.backgroundColor = "gray";
           onSucess.style.backgroundColor = "gray";
-          
-          savePresenceToS3(data.FaceMatches[0].Face.ExternalImageId);
+         },1000);
+
           // setTimeout(deleteFile(), 3000);
 
           
@@ -528,6 +532,9 @@ function checkLoop(){
         }
         else{
           alert("Face not found - Go to Register page");
+          onProcessing.style.backgroundColor = "gray";
+          onFaceDetect.style.backgroundColor = "gray";
+          onSucess.style.backgroundColor = "gray";
           // statusText.innerText = "Match Not Found ";
           // personDetected.innerText = "Match Not Found";
 
@@ -537,14 +544,39 @@ function checkLoop(){
       }
     });
   }
+function viewAttendance(){
+  console.log("Here");
+}
 
+function getFullDate(){
+  var d = new Date();
+  var day = d.getDate();
+  var mon = d.getMonth();
+  if(mon == 12){
+    mon = 1;
+  }
+  else{
+    mon = mon+1
+  }
+
+  if( mon == 1 ||mon == 2 ||mon == 3 ||mon == 4 ||mon == 5 ||mon == 6 ||mon == 7 ||mon == 8 ||mon == 9 ){
+    mon = "0"+mon;
+  }
+
+  var year = d.getFullYear()
+  var todayDate = year+"-"+mon+"-"+day;
+
+  return todayDate.toString();
+}
 
   function savePresenceToS3(userName){
     globalCanvasData
     var key;
     var d = new Date();
     var epoch = d.getTime();
-    key = "FaceAttendace/"+userName + "-" + epoch;
+    var todayFullDate = getFullDate();
+    key = encodeURIComponent("FaceAttendance") + '/'+  encodeURIComponent(todayFullDate) + '/'+  encodeURIComponent(userName) + '/'+  encodeURIComponent(epoch);  
+    // key = "FaceAttendance/"+todayFullDate+"/"+userName + "/" + epoch;
     addPhoto(globalImageData,key,0);
     
     
@@ -753,6 +785,18 @@ var epoch = d.getTime();
 
   // myCreateFunction("ashtam","12");
 
+  // document.getElementById("showRegister").addEventListener("click", function() {
+  //   // document.getElementById("demo").innerHTML = "Hello World";
+  //   console.log("sad");
+
+  //   // document.querySelectorAll('.formDiv')[0].
+  //   // style.display = 'hidden';
+
+  //   // document.querySelectorAll('.currentFaceDetail')[0].
+  //   // style.display = 'inline-block';
+  //   document.getElementsByClassName('formDiv')[0].style.visibility = 'visible';
+  //   document.getElementsByClassName('currentFaceDetail')[0].style.visibility = 'hidden';
+  // });
 
   document.getElementById("showRegister").addEventListener("click", function() {
     // document.getElementById("demo").innerHTML = "Hello World";
