@@ -341,6 +341,13 @@ function viewAlbum(empName) {
 
     var divToClear = document.getElementById('results');
     divToClear.innerHTML = "";
+
+
+    var divToClear = document.getElementById('etime');
+    divToClear.innerHTML = "";
+
+    var divToClear = document.getElementById('stime');
+    divToClear.innerHTML = "";
     
   }
 
