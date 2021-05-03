@@ -456,6 +456,10 @@ function checkLoop(){
 
         }
 
+        document.getElementById("fname").value = '';
+        document.getElementById("lname").value = '';
+        document.getElementById("email").value = '';
+
         setTimeout(function(){
           onProcessing.style.backgroundColor = "gray";
           onFaceDetect.style.backgroundColor = "gray";
@@ -572,7 +576,9 @@ function getFullDate(){
   if( mon == 1 ||mon == 2 ||mon == 3 ||mon == 4 ||mon == 5 ||mon == 6 ||mon == 7 ||mon == 8 ||mon == 9 ){
     mon = "0"+mon;
   }
-
+  if( day == 1 ||day == 2 ||day == 3 ||day == 4 ||day == 5 ||day == 6 ||day == 7 ||day == 8 ||day == 9 ){
+    day = "0"+day;
+  }
   var year = d.getFullYear()
   var todayDate = year+"-"+mon+"-"+day;
 
@@ -588,8 +594,6 @@ function getFullDate(){
     key = encodeURIComponent("FaceAttendance") + '/'+  encodeURIComponent(todayFullDate) + '/'+  encodeURIComponent(userName) + '/'+  encodeURIComponent(epoch);  
     // key = "FaceAttendance/"+todayFullDate+"/"+userName + "/" + epoch;
     addPhoto(globalImageData,key,0);
-    
-    
   }
 
 //   function uploadToS3(imageData){
@@ -791,7 +795,7 @@ console.log("Creating Collection");
       // }, false);
     }
     var d = new Date();
-var epoch = d.getTime();
+    var epoch = d;
     var cell = row.insertCell(row.cells.length);
     cell.innerHTML = epoch;
     // cell.classList.add("delete_row");

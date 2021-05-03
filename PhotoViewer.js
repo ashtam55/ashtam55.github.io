@@ -185,7 +185,9 @@ function viewAlbum(empName) {
   console.log("hurray");
   showTime(array);
     //   document.getElementsByTagName('img')[0].setAttribute('style', 'display:block;');
-
+  array.length = 0;   
+  console.log(array);
+   
     });
   }
 
@@ -197,8 +199,13 @@ function viewAlbum(empName) {
     newArray.sort(function(a, b){return a - b});
     console.log(newArray[0]);
     console.log(newArray[newArray.length - 1]);
-    var firstPre = newArray[0];
-    var lastPre = newArray[newArray.length - 1];
+    var firstPreEpoch = parseInt(newArray[0], 10);
+    var lastPreEpoch = parseInt(newArray[newArray.length - 1], 10);
+
+    var firstPre = new Date(firstPreEpoch);
+    var lastPre = new Date(lastPreEpoch);
+    // console.log(first.toLocaleString());
+    console.log(firstPre);
     document.getElementById('stime').innerHTML = "First seen --> "+firstPre;
     document.getElementById('etime').innerHTML = "Last seen --> "+lastPre;
   }
@@ -266,6 +273,11 @@ function viewAlbum(empName) {
     
       if( mon == 1 ||mon == 2 ||mon == 3 ||mon == 4 ||mon == 5 ||mon == 6 ||mon == 7 ||mon == 8 ||mon == 9 ){
         mon = "0"+mon;
+      }
+  
+    
+      if( day == 1 ||day == 2 ||day == 3 ||day == 4 ||day == 5 ||day == 6 ||day == 7 ||day == 8 ||day == 9 ){
+        day = "0"+day;
       }
     var todayDate = day+"-"+mon+"-"+year;
     return todayDate.toString();
