@@ -11,6 +11,7 @@
   <script src="aws-cognito-sdk.js"></script>
   <script src="amazon-cognito-identity.min.js"></script>
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.16.0.min.js"></script>
+
   <link rel="stylesheet" href="styles.css">
 
 </head>
@@ -32,6 +33,7 @@
         </nav> 
         
       </header>
+      <div class="content">
 
       <div class="container">
 
@@ -50,6 +52,9 @@
  
   <h4>Processing</h4><span id="pro"></span>
   <h4>Success</h4><span id="suc"></span>
+
+  <!-- <label for="file">Downloading progress:</label>
+<progress id="file" value="32" max="100"> 32% </progress> -->
 </div>
     <div class="formDiv">
         <h1>Registration Form</h1>
@@ -77,7 +82,9 @@
               <tr>
                 <th>Name</th>
                 <th>Confidence</th>
-                <th>TimeStamp</th>
+                <th>Temp(C)</th>
+                <th>Timestamp</th>
+
               </tr>
             </thead>
             <tbody>
@@ -90,7 +97,7 @@
             
         </div> 
     </div>
-    
+  </div>
 </body>
 
 <script defer src="face-api.min.js"></script>

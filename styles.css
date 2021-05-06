@@ -104,15 +104,19 @@ video{
         display: flex;
   background-color: #fff;
   border-radius: 5px;
+  left: 300px;
+  position: absolute;
 }
 
 .status-1{
   visibility: visible;
   position: absolute;
   top: 42vh;
-  left: 19vw;
+  left: 5vw;
 
 }
+
+
 
 .container-output{
   /* margin: 20px;
@@ -127,7 +131,7 @@ video{
   border-radius: 50%;
         top: 13vh;
         position: absolute;
-        left: 297px;
+        left: 45px;
 }
 
 #outputImage{
@@ -141,7 +145,7 @@ video{
 .formDiv{
   /* display: none; */
   position: absolute;
-  left: 70vw;
+  left: 60vw;
   top: 13vh;
   visibility: visible;
 
@@ -182,7 +186,7 @@ input, select, textarea {
 .currentFaceDetail{
   visibility: hidden;
   position: absolute;
-  left: 70vw;
+  left: 59vw;
   top: 13vh;
 
   /* z-index: 999px; */
@@ -218,8 +222,8 @@ input, select, textarea {
 }
 
 .table-bordered {
-  /* width: 100%; */ /* Optional */
-  /* border-collapse: collapse; */
+  width: 100%;
+  border-collapse: collapse;
   border-spacing: 0;
   border: 2px solid black;
 }

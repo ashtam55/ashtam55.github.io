@@ -103,6 +103,7 @@ detector.addEventListener("onInitializeSuccess", function() {
   // TODO(optional): Call a function to initialize the game, if needed
   // <your code here>
 });
+
 detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp) {
   // console.log(faces[0].expressions.eyeClosure);
   // var canvas = $('#face_video_canvas')[0];
@@ -529,8 +530,12 @@ function checkLoop(){
           // console.log(data);
           // personDetected.innerText = data.FaceMatches[0].Face.ExternalImageId + "  with confidence score -- "+data.FaceMatches[0].Face.Confidence;
           onSucess.style.backgroundColor = "green";
-          savePresenceToS3(data.FaceMatches[0].Face.ExternalImageId);
-          myCreateFunction(data.FaceMatches[0].Face.ExternalImageId,data.FaceMatches[0].Face.Confidence);
+          // fetch('http://192.168.1.62/temperature',{mode:'cors',credentials:'include'})
+          // .then(response => response.json())
+          // .then(data => console.log(data));
+
+          getTempData(data.FaceMatches[0].Face.ExternalImageId,data.FaceMatches[0].Face.Confidence);
+          
 
           
          setTimeout(function(){
@@ -558,6 +563,51 @@ function checkLoop(){
       }
     });
   }
+
+
+function getTempData(imageID,confidence) {
+  var http = new XMLHttpRequest();
+  var url = '192.168.1.62';
+  var params = 'temperature';
+  http.open('POST', "http://192.168.1.62/temperature", true);
+
+  //Send the proper header information along with the request
+  // http.setRequestHeader('Content-type', 'text/html');
+  // http.setRequestHeader('Access-Control-Allow-Methods', 'OPTIONS,GET,PUT,POST,DELETE');
+
+  http.onreadystatechange = function () {//Call a function when the state changes.
+    if (http.readyState == 4 && http.status == 200) {
+      // alert(http.responseText);
+     
+      var response = JSON.parse(http.responseText);
+      console.log(response.value);
+      savePresenceToS3(imageID);
+      myCreateFunction(imageID,confidence,response.value);
+    }
+    // else{
+    //   console.log('Temperature not recorded Please Retry');
+    // }
+  }
+  http.send();
+
+  // var proxyURL = 'https://cors-anywhere.herokuapp.com';
+  // var requestURL = 'http://192.168.1.62/temperature';
+
+  // var request = new XMLHttpRequest();
+  // request.open('GET', proxyURL + '/' + requestURL, true);
+  // request.responseType = 'json';
+
+  // request.onload = function () {
+  //   var data = request.response;
+  //   // document.querySelector('pre').textContent = JSON.stringify(data, null, 2);
+  //   console.log(data);
+  // }
+
+  // request.send();
+}
+
+
+
 function viewAttendance(){
   console.log("Here");
 }
@@ -774,7 +824,7 @@ console.log("Creating Collection");
 
   var table = document.getElementById("myTable");
 
-  function myCreateFunction(name,accuracy) {
+  function myCreateFunction(name,accuracy, temp) {
 
     var i = table.rows.length;
     var row = table.insertRow(i);
@@ -789,7 +839,10 @@ console.log("Creating Collection");
         cell.innerHTML = accuracy;
 
       }
-      
+      else if(j == 2){
+        cell.innerHTML = temp;
+
+      }
       // table.rows[i].cells[j].addEventListener("click", function() {
       //   editText(this);
       // }, false);
