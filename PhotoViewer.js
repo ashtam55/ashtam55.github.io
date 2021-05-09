@@ -378,6 +378,11 @@ function viewAlbum(empName) {
     var divToClear = document.getElementById('stime');
     divToClear.innerHTML = "";
     
+    var divToClear = document.getElementById('etemp');
+    divToClear.innerHTML = "";
+
+    var divToClear = document.getElementById('stemp');
+    divToClear.innerHTML = "";
   }
 
 //   function DeleteRows() {
