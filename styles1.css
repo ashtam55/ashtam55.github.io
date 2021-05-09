@@ -93,6 +93,20 @@ li {
 
   #etime{
     position: absolute;
-    left: 1166px;
+    left: 1276px;
     top: 148px;
   }
+
+#stemp{
+
+  position: absolute;
+  top: 147px;
+  left: 1135px;
+}
+
+#etemp{
+
+  position: absolute;
+  top: 147px;
+  left: 1669px;
+}

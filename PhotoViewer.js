@@ -193,12 +193,24 @@ function viewAlbum(empName) {
 
 
   function showTime(array){
+
     var newArray = array.filter(function(element) {
         if(element != '') return element;
     });
     newArray.sort(function(a, b){return a - b});
     console.log(newArray[0]);
     console.log(newArray[newArray.length - 1]);
+
+    var firstTemp = newArray[0].toString();
+    firstTemp = firstTemp.split('-');
+
+    // const [temp] = firstTemp.split('-');
+    // console.log(firstTemp[1]);
+
+    var lastTemp = newArray[newArray.length - 1].toString();
+    lastTemp = lastTemp.split('-');
+
+    
     var firstPreEpoch = parseInt(newArray[0], 10);
     var lastPreEpoch = parseInt(newArray[newArray.length - 1], 10);
 
@@ -207,10 +219,15 @@ function viewAlbum(empName) {
     // console.log(first.toLocaleString());
     console.log(firstPre);
     document.getElementById('stime').innerHTML = "First seen --> "+firstPre;
+
+    document.getElementById('stemp').innerHTML = "Temp(C) --> "+firstTemp[1];
     document.getElementById('etime').innerHTML = "Last seen --> "+lastPre;
+    document.getElementById('etemp').innerHTML = "Temp(C) --> "+lastTemp[1];
+
   }
 
   function myCreateFunction(name) {
+    
     var table = document.getElementById("employeeTable");
 
     var i = table.rows.length;

@@ -339,7 +339,8 @@ function checkLoop(){
         ContentType:blobData.type,
         Key: key+".jpg",
         Body: blobData,
-        ACL: 'public-read'
+        ACL: 'public-read',
+        
     };
 
        bucket.putObject(params, function(err, data) {
@@ -581,7 +582,7 @@ function getTempData(imageID,confidence) {
      
       var response = JSON.parse(http.responseText);
       console.log(response.value);
-      savePresenceToS3(imageID);
+      savePresenceToS3(imageID,response.value);
       myCreateFunction(imageID,confidence,response.value);
     }
     // else{
@@ -635,13 +636,13 @@ function getFullDate(){
   return todayDate.toString();
 }
 
-  function savePresenceToS3(userName){
+  function savePresenceToS3(userName,userTemp){
     globalCanvasData
     var key;
     var d = new Date();
     var epoch = d.getTime();
     var todayFullDate = getFullDate();
-    key = encodeURIComponent("FaceAttendance") + '/'+  encodeURIComponent(todayFullDate) + '/'+  encodeURIComponent(userName) + '/'+  encodeURIComponent(epoch);  
+    key = encodeURIComponent("FaceAttendance") + '/'+  encodeURIComponent(todayFullDate) + '/'+  encodeURIComponent(userName) + '/'+  encodeURIComponent(epoch) +'-'+encodeURIComponent(userTemp);  
     // key = "FaceAttendance/"+todayFullDate+"/"+userName + "/" + epoch;
     addPhoto(globalImageData,key,0);
   }
