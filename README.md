@@ -1,10 +1,14 @@
-# IMPORTANT: Bug Fixes
+# Touchless Attendance System
 
-## `navigator.getUserMedia`
+A smart way to incorporate attendance onboarding feature.
 
-`navigator.getUserMedia` is now deprecated and is replaced by `navigator.mediaDevices.getUserMedia`. To fix this bug replace all versions of `navigator.getUserMedia` with `navigator.mediaDevices.getUserMedia`
+# Built-ON
 
-## Low-end Devices Bug
+* AWS Rekognition API - JS sdk
+* Face-api.js
+* Affectiva
+* Teachable machine
+* p5.js
+* ml5.js
 
-The video eventListener for `play` fires up too early on low-end machines, before the video is fully loaded, which causes errors to pop up from the Face API and terminates the script (tested on Debian [Firefox] and Windows [Chrome, Firefox]). Replaced by `playing` event, which fires up when the media has enough data to start playing.
-
+Drop a star if you found it useful

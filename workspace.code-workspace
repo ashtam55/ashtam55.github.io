@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "mlx_esp32",
+			"path": "../mlx_esp32"
+		}
+	],
+	"settings": {}
+}
