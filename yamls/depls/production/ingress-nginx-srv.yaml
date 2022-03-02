@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx-srv
+  namespace: dro-space
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /picker/
+            pathType: Prefix
+            backend:
+              service:
+                name: picker-srv
+                port:
+                  number: 9010
+          - path: /rider/
+            pathType: Prefix
+            backend:
+              service:
+                name: rider-srv
+                port:
+                  number: 9004
+          - path: /auth/
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-verification-srv
+                port:
+                  number: 9002

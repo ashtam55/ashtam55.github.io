@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: rider-depl
+  namespace: dro-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rider
+  template:
+    metadata:
+      labels:
+        app: rider
+    spec:
+      containers:
+        - name: rider
+          image: 895029413664.dkr.ecr.ap-south-1.amazonaws.com/deerikaprod/rider:2.6.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rider-srv
+  namespace: dro-space 
+spec:
+  selector:
+    app: rider
+  ports:
+    - name: rider
+      protocol: TCP
+      port: 9004
+      targetPort: 9004
