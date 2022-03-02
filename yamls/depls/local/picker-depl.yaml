@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: picker-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: picker
+  template:
+    metadata:
+      labels:
+        app: picker
+    spec:
+      containers:
+        - name: picker
+          image: deerika/picker
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: picker-srv
+spec:
+  selector:
+    app: picker
+  ports:
+    - name: picker
+      protocol: TCP
+      port: 9010
+      targetPort: 9010

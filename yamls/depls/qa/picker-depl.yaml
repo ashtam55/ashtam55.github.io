@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: picker-depl
+  namespace: dro-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: picker
+  template:
+    metadata:
+      labels:
+        app: picker
+    spec:
+      containers:
+        - name: picker
+          image: 895029413664.dkr.ecr.ap-south-1.amazonaws.com/deerikaprod/picker:3.5.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: picker-srv
+  namespace: dro-space
+spec:
+  selector:
+    app: picker
+  ports:
+    - name: picker
+      protocol: TCP
+      port: 9010
+      targetPort: 9010
