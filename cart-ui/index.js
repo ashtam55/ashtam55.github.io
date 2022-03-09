@@ -53,5 +53,7 @@ function processQRResults(_qrdata) {
     }
     else {
         // alert(_qrdata.message);
+        window.location.href = "second.html";
+
     }
 }

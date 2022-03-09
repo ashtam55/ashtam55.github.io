@@ -4,50 +4,52 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Empty Cart</title>
   
 </head>
-
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+</style>
 <body>
-  
-    <header class="border-b md:flex md:items-center md:justify-between p-11 pb-0 shadow-lg md:pb-4">
-  
-        <!-- Logo text or image -->
-        
-        <div class="flex flex-row mb-10 md:mb-10">
-           
-            <p class="text-base 3xl:text-xl text-4xl place-content-center font-semibold 2xl:text-xl text-txt">Hi Ashtam</p>
+ <div class="flex flex-row justify-between bg-white shadow-sm shadow-radiallayer p-5 justify-center text-center align-center">
+
+        <div class="title text-center  items-center flex-row justify-center flex">
+            <h1 class="text-base font-semibold 2xl:text-xl text-txt" >Hi Ashtam</h1>
         </div>
-        <!-- END Logo text or image -->
-        
-        <!-- Search field -->
-        <div class="flex items-center  justify-between mb-10 md:mb-10">
-            <h1 class="text-base font-semibold text-opacity-50 2xl:text-xl text-txt-light justify-center ml-28">
-                <img src="/assets/Deerika_hunapstudio-01.png" width="150px" height="155px"  alt="">
-            </h1>
-          </div>
-  
-        <!-- END Search field -->
-        
-        <!-- Global navigation -->
-        <nav>
-          <ul class="list-reset md:flex md:items-center mb-10 md:mb-10">
-            <li class="md:ml-4">
-                <img src="./assets/wallet-3.png" alt="">
-              </li>
-            <li class="md:ml-4">
-              Wallet Balance
-            </li>
-            <li class="md:ml-4">
-             550
-            </li>
-         
-          </ul>
-        </nav>
-        <!-- END Global navigation -->
-      
-      </header>
+
+        <div class="logo ml-16 items-center">
+            <img width="300px" src="./assets/Deerika_hunapstudio-01.png" alt="">
+        </div>
+
+        <div class="wallet flex ">
+            <ul class="flex text-center items-center flex-row justify-center">
+                <li class="mr-2 ml-4"><img src="/assets/wallet-3.png" alt=""></li>
+                <li class="mr-2 text-base font-semibold 2xl:text-xl text-txt ml-4">Wallet Balance</li>
+                <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt ">&#8377; 550</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <main style="background-image: url('./assets/bg.png');height: 85.5vh ;background-size: cover; background-repeat: no-repeat; background-position: center;">
+
+    <div class=" flex flex-col">
+
+        <div class=" flex flex-col items-center mt-20 mr-24">
+            <h1 class="text-center  text-txt text-base font-semibold 2xl:text-xl text-opacity-10 text-txt-light ">Add Item in your cart to Exprience <br> the future of Shopping</h1>
+        </div>
+
+        <div class="cart_image  flex flex-col items-center align-center mr-28"> 
+            <img class="animate-bounce " src="./assets/animation_.png" alt="">
+        </div>
+
+    </div>
+    </main>
+
 </body>
 </html>
