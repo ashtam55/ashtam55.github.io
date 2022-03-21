@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Empty Cart</title>
-  
+
 </head>
 <style>
-    *{
+    * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
-    body{
-        background-image: url('./assets/bg.png');height: 85.5vh ;background-size: cover; background-repeat: inherit; background-position: center;
+
+    body {
+        background-image: url('./assets/bg.png');
+        height: 85.5vh;
+        background-size: cover;
+        background-repeat: inherit;
+        background-position: center;
+    }
+    .footer{
+        position: fixed;
+        bottom: 0;
+        width: 100%;
     }
 </style>
+
 <body>
- <div class="flex flex-row justify-between z-1 bg-white shadow-sm shadow-radiallayer justify-center text-center align-center">
+    <div
+        class="flex flex-row justify-between z-1 bg-white shadow-sm shadow-radiallayer justify-center text-center align-center">
 
         <div class="title text-center  items-center flex-row justify-center flex">
-            <h1 class="text-base font-semibold 2xl:text-xl text-txt ml-8" >Hi Ashtam</h1>
+            <h1 class="text-base font-semibold 2xl:text-xl text-txt ml-8">Hi Ashtam</h1>
         </div>
 
         <div class="logo ml-16 items-center">
@@ -41,181 +54,236 @@
 
     <main>
 
-        <div class="container bg-white z-1" style="max-width: 1200px; margin: 0 auto;border-radius: 10px; margin-top: 2.3rem;">
-        <div class="row " style="border-bottom: dotted rgb(187, 185, 185);">
-            <div class="grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2">
-                <div class="col-span-2 flex flex-row mt-10 -mb-14"> 
-                    <div class="image justify-center flex align-center text-center ml-7 mr-10">
-                        <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+        <div class="container bg-white z-1"
+            style="max-width: 1200px; margin: 0 auto;border-radius: 10px; margin-top: 2.3rem;">
+            <div class="row " style="border-bottom: dotted rgb(187, 185, 185);">
+                <div
+                    class="grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2">
+                    <div class="col-span-2 flex flex-row mt-10 -mb-14">
+                        <div class="image justify-center flex align-center text-center ml-7 mr-10">
+                            <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+                        </div>
+                        <div class="title flex flex-col justify-between ml-4">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper
+                            </h2>
+                            <p class="text-base text-gray-400 mb-6 font-bold text-yellow 2xl:text-lg mr-auto">
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                (10)
+                            </p>
+                        </div>
+
+                        <div class="rate flex flex-col ml-auto mr-12">
+                            <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2>
+                            <p class="text-base 2xl:text-xl text-txt ml-3">
+                                <br>
+                                <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
+                        </div>
                     </div>
-                <div class="title flex flex-col justify-between ml-4">
-                    <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper</h2>
-                    <p class="text-base text-gray-400 mb-6 font-bold text-yellow 2xl:text-lg mr-auto">
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        (10)
-                     </p>
-                </div>
-
-                <div class="rate flex flex-col ml-auto mr-12">
-                    <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2>
-                    <p class="text-base 2xl:text-xl text-txt ml-3">
-                        <br>
-                        <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
-                </div>
-            </div>
-                <!-- <div class="col-span-2">02</div> -->
-                <div style="border-left:dotted rgb(187, 185, 185); border-left: 5px 0 5px 0px;">  
-                    <div class="mt-10 flex flex-row justify-center" >
-                        <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
-                        <span class="text-base 2xl:text-xl text-txt ml-3">  *</span>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
-                        <span> = </span>
-                        <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
-                </div>
-            </div>
-              </div>
-        </div>
-
-        <div class="row " style="border-bottom: dotted rgb(187, 185, 185); ">
-            <div class="grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2">
-                <div class="col-span-2 flex flex-row mt-10 -mb-14"> 
-                    <div class="image justify-center flex align-center text-center ml-7 mr-10">
-                        <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+                    <!-- <div class="col-span-2">02</div> -->
+                    <div style="border-left:dotted rgb(187, 185, 185); border-left: 5px 0 5px 0px;">
+                        <div class="mt-10 flex flex-row justify-center">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
+                            <span class="text-base 2xl:text-xl text-txt ml-3"> *</span>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
+                            <span> = </span>
+                            <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
+                        </div>
                     </div>
-                <div class="title flex flex-col justify-between ml-4">
-                    <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper</h2>
-                    <p class="text-base text-gray-400 mb-6 font-bold text-yellow 2xl:text-lg mr-auto">
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        (10)
-                     </p>
                 </div>
+            </div>
 
-                <div class="rate flex flex-col ml-auto mr-12">
-                    <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2><br>
-                    <p class="text-base 2xl:text-xl text-txt ml-3">
-                        <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
-                </div>
-            </div>
-                <!-- <div class="col-span-2">02</div> -->
-                <div style="border-left:dotted rgb(187, 185, 185) ;">  
-                    <div class="mt-10 flex flex-row justify-center" >
-                        <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
-                        <span class="text-base 2xl:text-xl text-txt ml-3">  *</span>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
-                        <span> = </span>
-                        <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
-                </div>
-            </div>
-              </div>
-        </div>
-        <div class="row " style="border-bottom: dotted rgb(187, 185, 185); ">
-            <div class="grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2">
-                <div class="col-span-2 flex flex-row mt-10 -mb-14"> 
-                    <div class="image justify-center flex align-center text-center ml-7 mr-10">
-                        <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+            <div class="row " style="border-bottom: dotted rgb(187, 185, 185);">
+                <div
+                    class="grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2">
+                    <div class="col-span-2 flex flex-row mt-10 -mb-14">
+                        <div class="image justify-center flex align-center text-center ml-7 mr-10">
+                            <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+                        </div>
+                        <div class="title flex flex-col justify-between ml-4">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper
+                            </h2>
+                            <p class="text-base text-gray-400 mb-6 font-bold text-yellow 2xl:text-lg mr-auto">
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                (10)
+                            </p>
+                        </div>
+
+                        <div class="rate flex flex-col ml-auto mr-12">
+                            <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2>
+                            <p class="text-base 2xl:text-xl text-txt ml-3">
+                                <br>
+                                <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
+                        </div>
                     </div>
-                <div class="title flex flex-col justify-between ml-4">
-                    <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper</h2>
-                    <p class="text-base text-gray-400 font-bold mb-6 text-yellow 2xl:text-lg mr-auto">
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        (10)
-                     </p>
-                </div>
-
-                <div class="rate flex flex-col ml-auto mr-12">
-                    <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2>
-                    <br>
-                    <p class="text-base 2xl:text-xl text-txt ml-3">
-                        <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
-                </div>
-            </div>
-                <!-- <div class="col-span-2">02</div> -->
-                <div style="border-left:dotted rgb(187, 185, 185) ;">  
-                    <div class="mt-10 flex flex-row justify-center" >
-                        <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
-                        <span class="text-base 2xl:text-xl text-txt ml-3">  *</span>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
-                        <span> = </span>
-                        <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
-                </div>
-            </div>
-              </div>
-        </div>
-        <div class="row " style="border-bottom: dotted rgb(187, 185, 185); ">
-            <div class="grid grid-flow-row-dense grid-cols-3 justify-center align-center items-center text-center grid-rows-2">
-                <div class="col-span-2 flex flex-row mt-10 -mb-14"> 
-                    <div class="image justify-center flex align-center text-center ml-7 mr-10">
-                        <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+                    <!-- <div class="col-span-2">02</div> -->
+                    <div style="border-left:dotted rgb(187, 185, 185); border-left: 5px 0 5px 0px;">
+                        <div class="mt-10 flex flex-row justify-center">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
+                            <span class="text-base 2xl:text-xl text-txt ml-3"> *</span>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
+                            <span> = </span>
+                            <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
+                        </div>
                     </div>
-                <div class="title flex flex-col justify-between ml-4">
-                    <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper</h2>
-                    <p class="text-base text-gray-400 font-bold text-yellow 2xl:text-lg mb-6 mr-auto">
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        <span>&#x1F31F;</span>
-                        (10)
-                     </p>
-                </div>
-
-                <div class="rate flex flex-col ml-auto mr-12">
-                    <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2>
-                    <p class="text-base 2xl:text-xl text-txt ml-3">
-                        <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
                 </div>
             </div>
-                <!-- <div class="col-span-2">02</div> -->
-                <div style="border-left:dotted rgb(187, 185, 185) ;">  
-                    <div class="mt-10 flex flex-row justify-center" >
-                        <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
-                        <span class="text-base 2xl:text-xl text-txt ml-3">  *</span>
-                        <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
-                        <span> = </span>
-                        <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
+
+            <div class="row " style="border-bottom: dotted rgb(187, 185, 185); ">
+                <div
+                    class="grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2">
+                    <div class="col-span-2 flex flex-row mt-10 -mb-14">
+                        <div class="image justify-center flex align-center text-center ml-7 mr-10">
+                            <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+                        </div>
+                        <div class="title flex flex-col justify-between ml-4">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper
+                            </h2>
+                            <p class="text-base text-gray-400 mb-6 font-bold text-yellow 2xl:text-lg mr-auto">
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                (10)
+                            </p>
+                        </div>
+
+                        <div class="rate flex flex-col ml-auto mr-12">
+                            <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2><br>
+                            <p class="text-base 2xl:text-xl text-txt ml-3">
+                                <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
+                        </div>
+                    </div>
+                    <!-- <div class="col-span-2">02</div> -->
+                    <div style="border-left:dotted rgb(187, 185, 185) ;">
+                        <div class="mt-10 flex flex-row justify-center">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
+                            <span class="text-base 2xl:text-xl text-txt ml-3"> *</span>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
+                            <span> = </span>
+                            <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
+                        </div>
+                    </div>
                 </div>
             </div>
-              </div>
-        </div>
+            <div class="row " style="border-bottom: dotted rgb(187, 185, 185); ">
+                <div
+                    class="grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2">
+                    <div class="col-span-2 flex flex-row mt-10 -mb-14">
+                        <div class="image justify-center flex align-center text-center ml-7 mr-10">
+                            <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+                        </div>
+                        <div class="title flex flex-col justify-between ml-4">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper
+                            </h2>
+                            <p class="text-base text-gray-400 font-bold mb-6 text-yellow 2xl:text-lg mr-auto">
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                (10)
+                            </p>
+                        </div>
+
+                        <div class="rate flex flex-col ml-auto mr-12">
+                            <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2>
+                            <br>
+                            <p class="text-base 2xl:text-xl text-txt ml-3">
+                                <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
+                        </div>
+                    </div>
+                    <!-- <div class="col-span-2">02</div> -->
+                    <div style="border-left:dotted rgb(187, 185, 185) ;">
+                        <div class="mt-10 flex flex-row justify-center">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
+                            <span class="text-base 2xl:text-xl text-txt ml-3"> *</span>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
+                            <span> = </span>
+                            <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="border-bottom: dotted rgb(187, 185, 185); ">
+                <div
+                    class="grid grid-flow-row-dense grid-cols-3 justify-center align-center items-center text-center grid-rows-2">
+                    <div class="col-span-2 flex flex-row mt-10 -mb-14">
+                        <div class="image justify-center flex align-center text-center ml-7 mr-10">
+                            <img src="./assets/tatasalt_og 1.png" width="100" height="100" alt="">
+                        </div>
+                        <div class="title flex flex-col justify-between ml-4">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt mr-auto">Deerika Veg turbo Chopper
+                            </h2>
+                            <p class="text-base text-gray-400 font-bold text-yellow 2xl:text-lg mb-6 mr-auto">
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                <span>&#x1F31F;</span>
+                                (10)
+                            </p>
+                        </div>
+
+                        <div class="rate flex flex-col ml-auto mr-12">
+                            <h2 class="text-base 2xl:text-xl text-txt ml-3">1 KG</h2>
+                            <p class="text-base 2xl:text-xl text-txt ml-3">
+                                <strike class="text-gray-400">&#8377;15 </strike> &#8377;12 </p>
+                        </div>
+                    </div>
+                    <!-- <div class="col-span-2">02</div> -->
+                    <div style="border-left:dotted rgb(187, 185, 185) ;">
+                        <div class="mt-10 flex flex-row justify-center">
+                            <h2 class="text-base font-semibold 2xl:text-xl text-txt">Quantity:</h2>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3">2 pc</h3>
+                            <span class="text-base 2xl:text-xl text-txt ml-3"> *</span>
+                            <h3 class="text-base 2xl:text-xl text-txt ml-3 mr-3">&#8377; 12</h3>
+                            <span> = </span>
+                            <h1 class="text-base 2xl:text-xl text-txt ml-3">&#8377; 24.00</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
-        <div class="row">
-            <div class="grid grid-flow-row-dense grid-cols-1  p-3">
-                <div class="btn flex flex-row justify-center rounded-full bg-yellow-500">
-                    <div class="flex flex-col  align-left mb-4 mt-2 ">
-                        <h6 class="text-base 2xl:text-md  text-txt">Total Saving &#8377; 15</h6>
-                        <h2 class="text-base 2xl:text-2xl font-semibold text-txt">Cart Total Balance &#8377; 1855</h2>
-                        
+            <div class="row footer">
+                <div class="grid grid-flow-row-dense grid-cols-1  p-3">
+                    <div class="btn flex flex-row justify-center rounded-full bg-yellow-500">
+                        <div class="flex flex-col  align-left mb-4 mt-2 ">
+                            <h6 class="text-base 2xl:text-md  text-txt">Total Saving &#8377; 15</h6>
+                            <h2 class="text-base 2xl:text-2xl font-semibold text-txt">Cart Total Balance &#8377; 1855
+                            </h2>
+
+                        </div>
+                        <div class="flex flex-row">
+                            <button class="text-white bg-black rounded-full w-64 h-10 mt-5 mb-4 ml-16 btn-sm">
+                                <h3 class="text-base flex flex-row justify-center 2xl:text-lg  text-txt"> Proceed to pay
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-8 w-8 ml-2 rounded-full bg-yellow-500 shadow-sm" fill="none"
+                                        viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </h3>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex flex-row">
-                        <button class="text-white bg-black rounded-full w-64 h-10 mt-5 mb-4 ml-16 btn-sm">
-                            <h3 class="text-base flex flex-row justify-center 2xl:text-lg  text-txt"> Proceed to pay
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 ml-2 rounded-full bg-yellow-500 shadow-sm" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                  </svg>
-                            </h3>
-                        </button>
-                    </div>
-                     </div>
-              </div>
-        </div>
+                </div>
+            </div>
     </main>
 
 </body>
+
 </html>
