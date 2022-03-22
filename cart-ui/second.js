@@ -56,6 +56,19 @@ var json = localStorage.getItem("UserJson");
 console.log(json);
 var userMobile = JSON.parse(json).data.mobile;
 console.log(userMobile);
+var userName = JSON.parse(json).data.name;
+if(userName != ""){
+  document.getElementById('name').innerHTML = "Hi "+ userName;
+  localStorage.setItem("userName",userName);
+  console.log("dasdadasd");
+}
+else{
+  document.getElementById('name').innerHTML = "Hi "+ userMobile;
+  localStorage.setItem("userMobile",userMobile);
+  console.log("12313123");
+
+}
+div.innerHTML = "Generating Token";
 generatingToken('http://aaf0c21919fc7446a80a01b571d85edd-502ca277c7a8573b.elb.ap-northeast-3.amazonaws.com/auth/toke-generator/', JSON.parse(json))
   .then(data => {
     console.log(data); // JSON data parsed by `data.json()` call
@@ -63,9 +76,13 @@ generatingToken('http://aaf0c21919fc7446a80a01b571d85edd-502ca277c7a8573b.elb.ap
     console.log(data.access_token); // JSON data parsed by `data.json()` call
     localStorage.setItem("UserToken",data.access_token);
     var url = 'http://a0081d9e6be6746e9bf613dc166a53ac-75257c64ea2c0cf3.elb.ap-northeast-3.amazonaws.com/walletAdmin/user_details/?page_num=1&page_size=10&mobile='+ userMobile
+    div.innerHTML = "Fetching Wallet Balance";
     return fetchWallet(url,data.access_token);
     
     // return fetchWallet('http://a0081d9e6be6746e9bf613dc166a53ac-75257c64ea2c0cf3.elb.ap-northeast-3.amazonaws.com/walletAdmin/user_details/?page_num=1&page_size=10&mobile=7060883183',data);
   }).then(data => {
-    console.log("HELO",data); // JSON data parsed by `data.json()` call
+    console.log("HELO",JSON.stringify(data)); // JSON data parsed by `data.json()` call
+    console.log("WAllet",data.data.data[0].wallet_amount);
+    localStorage.setItem("walletBalance",data.data.data[0].wallet_amount)
+    window.location.href = "cart.html";
   })
