@@ -194,3 +194,22 @@ MQTTconnect();
 data.forEach(function (order) {
   buildCartItem(order)
 })
+
+
+
+
+var json = {"message":"Details fetched Successfully","success":true,"data":{"user_id":"6226fe1ee556348efb00834e","mobile":"8076592211","name":"","email":"","notification_token":"fH3BmUXGRbeMl5TZ5fvHPM:APA91bEdcg4vySATBFK4RWzBtugp_WtEI6d10s0nb3lVkjCd2_rGC71y0dcx_E9ZYMZPEGGvs_kc3kWZ2Ak2_3UxYwoEfTQXMWQGyl7JPmdfSPDrWHXBcrJ7EFrHyJkoELeCFJu6Oc9z","is_member":false,"membership_id":null,"membership_with_free_items":0}};
+
+fetch("http://a0081d9e6be6746e9bf613dc166a53ac-75257c64ea2c0cf3.elb.ap-northeast-3.amazonaws.com/walletAdmin/user_details/?page_num=1&page_size=10&mobile=7060883183", {
+     
+    // Adding method type
+    method: "GET",
+    // Adding body or contents to send
+    // body: JSON.stringify(json),
+     
+    // Adding headers to the request
+    headers: {
+      "Authorization":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiIiwidXNlcl9pZCI6IjYyMjZmZTFlZTU1NjM0OGVmYjAwODM0ZSIsIm1vYmlsZSI6IjgwNzY1OTIyMTEiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcl90eXBlIjoiSVQiLCJpYXQiOjE2NDc5NDUxMjMsImV4cCI6MTY0Nzk4ODMyMywianRpIjoiODQ4NzQ2YjItNTFkZS00MDAyLWFlMzYtM2FhNDYwYjc0NmEzIn0.gfSSdBMb7BmmtVqtB2js5clmu0RGyNlqoIa_srtXLa0",
+      "Content-type": "application/json; charset=UTF-8"
+    }
+}).then(response => response.json()).then(json => console.log(json));

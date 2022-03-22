@@ -30,7 +30,7 @@ docReady(function () {
             // Handle on success condition with the decoded message.
             console.log(`Scan result ${decodedText}`, decodedResult);
             // console.log("yoyo", JSON.parse(decodedText).message);
-            processQRResults(JSON.parse(decodedText));
+            processQRResults(JSON.parse(decodedText),decodedResult);
         }
     }
     function onScanFailure(error) {
@@ -44,16 +44,23 @@ docReady(function () {
     html5QrcodeScanner.render(onScanSuccess);
 });
 
-function processQRResults(_qrdata) {
+function processQRResults(_qrdata,data) {
 
-    console.log(_qrdata.data.user_id)
+    console.log(_qrdata);
+    console.log(data.decodedText);
 
     if (_qrdata.message.toString() == "You are logged out") {
         // alert("Please login again")
     }
     else {
         // alert(_qrdata.message);
-        localStorage.setItem("User",_qrdata.data.user_id);
+        localStorage.setItem("UserId",_qrdata.data.user_id);
+        localStorage.setItem("UserJson",data.decodedText);
+        console.log(_qrdata.data.user_id)
+        var json = localStorage.getItem("UserJson");
+        console.log(JSON.parse(json));
+
+
         window.location.href = "second.html";
 
     }
