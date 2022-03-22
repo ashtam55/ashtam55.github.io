@@ -60,14 +60,12 @@ var userName = JSON.parse(json).data.name;
 if(userName != ""){
   document.getElementById('name').innerHTML = "Hi "+ userName;
   localStorage.setItem("userName",userName);
-  console.log("dasdadasd");
 }
 else{
   document.getElementById('name').innerHTML = "Hi "+ userMobile;
   localStorage.setItem("userMobile",userMobile);
-  console.log("12313123");
-
 }
+
 div.innerHTML = "Generating Token";
 generatingToken('http://aaf0c21919fc7446a80a01b571d85edd-502ca277c7a8573b.elb.ap-northeast-3.amazonaws.com/auth/toke-generator/', JSON.parse(json))
   .then(data => {
