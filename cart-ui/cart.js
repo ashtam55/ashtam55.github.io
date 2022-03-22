@@ -1,52 +1,103 @@
 //DummyData
-const data = [
-  {
+const data = [{
     id: 1,
-    img:"./assets/tatasalt_og 1.png",
+    img: "./assets/tatasalt_og 1.png",
     name: "Tata Salt",
     star: "4",
-    weight:"1kg",
-    strikePrice:"₹50",
-    mrp:"₹28",
-    quantity:2,
-    totalPrice:"₹56.00"
+    weight: "1kg",
+    strikePrice: "₹50",
+    mrp: "₹28",
+    quantity: 2,
+    totalPrice: "₹56.00"
   },
   {
     id: 2,
-    img:"./assets/tatasalt_og 1.png",
+    img: "./assets/tatasalt_og 1.png",
     name: "Head & Shoulders",
     star: "3",
-    weight:"1kg",
-    strikePrice:"₹50",
-    mrp:"₹28",
-    quantity:2,
-    totalPrice:"₹56.00"
+    weight: "1kg",
+    strikePrice: "₹50",
+    mrp: "₹28",
+    quantity: 2,
+    totalPrice: "₹56.00"
   },
   {
     id: 3,
-    img:"./assets/tatasalt_og 1.png",
+    img: "./assets/tatasalt_og 1.png",
     name: "Head & Shoulders",
     star: "3",
-    weight:"1kg",
-    strikePrice:"₹50",
-    mrp:"₹28",
-    quantity:2,
-    totalPrice:"₹56.00"
+    weight: "1kg",
+    strikePrice: "₹50",
+    mrp: "₹28",
+    quantity: 2,
+    totalPrice: "₹56.00"
   },
   {
     id: 4,
-    img:"./assets/tatasalt_og 1.png",
+    img: "./assets/tatasalt_og 1.png",
     name: "Head & Shoulders",
     star: "3",
-    weight:"1kg",
-    strikePrice:"₹50",
-    mrp:"₹28",
-    quantity:2,
-    totalPrice:"₹56.00"
+    weight: "1kg",
+    strikePrice: "₹50",
+    mrp: "₹28",
+    quantity: 2,
+    totalPrice: "₹56.00"
   }
 ];
 
-const buildCartItem = order => {
+var mqtt;
+var reconnectTimeout = 2000;
+var host = "15.206.66.251";
+var port = 8083;
+
+function onFailure(message) {
+  console.log("Connection Attempt to Host " + host + "Failed");
+  setTimeout(MQTTconnect, reconnectTimeout);
+}
+
+function onMessageArrived(msg) {
+  out_msg = "Message received " + msg.payloadString + "<br>";
+  out_msg = out_msg + "Message received Topic " + msg.destinationName;
+  
+  if (msg.destinationName == "admin/cart1/added_weight"){
+    console.log(out_msg);
+  }
+  else if(msg.destinationName == "admin/cart1/label"){
+    console.log(out_msg);
+  }
+
+}
+
+function onConnect() {
+  // Once a connection has been made, make a subscription and send a message.
+
+  console.log("Connected ");
+  mqtt.subscribe("admin/cart1/added_weight");
+  mqtt.subscribe("admin/cart1/label");
+
+  // message = new Paho.MQTT.Message("Hello World");
+  // message.destinationName = "sensor2";
+  // message.retained = true;
+  // mqtt.send(message);
+}
+
+function MQTTconnect() {
+  console.log("connecting to " + host + " " + port);
+  var x = Math.floor(Math.random() * 10000);
+  var cname = "CartID -" + x;
+  mqtt = new Paho.MQTT.Client(host, port, cname);
+  //document.write("connecting to "+ host);
+  var options = {
+    timeout: 3,
+    onSuccess: onConnect,
+    onFailure: onFailure,
+  };
+  mqtt.onMessageArrived = onMessageArrived
+
+  mqtt.connect(options); //connect
+}
+
+const buildCartItem = function (order) {
   // Create elements needed to build a card
 
   const div1 = document.createElement("div");
@@ -97,6 +148,7 @@ const buildCartItem = order => {
   _2p.append(br);
   _2p.append(strike);
 
+
   div1.setAttribute("class", "row");
   div2.setAttribute("class", "grid grid-flow-row-dense justify-center align-center items-center text-center grid-cols-3 grid-rows-2");
   div3.setAttribute("class", "col-span-2 flex flex-row mt-10 -mb-14");
@@ -113,6 +165,8 @@ const buildCartItem = order => {
   _1h1.setAttribute("class", "text-base 2xl:text-xl text-txt ml-3");
   _1h2.setAttribute("class", "text-base font-semibold 2xl:text-xl text-txt mr-auto");
   _1p.setAttribute("class", "text-base text-gray-400 mb-6 font-bold text-yellow 2xl:text-lg mr-auto");
+  _2h2.setAttribute("class", "text-base 2xl:text-xl text-txt ml-3");
+  _2p.setAttribute("class", "text-base 2xl:text-xl text-txt ml-3");
   strike.setAttribute("class", "text-gray-400");
   //Setting Data to cards
   img.setAttribute("src", order.img);
@@ -124,13 +178,19 @@ const buildCartItem = order => {
   _2h2.innerHTML = order.weight;
   strike.innerHTML = order.strikePrice;
   _2p.innerHTML = order.mrp;
-  _3h2.innerHTML = "Quantity";
+  _3h2.innerHTML = "Quantity: ";
   _1h3.innerHTML = order.quantity;
   span2.innerHTML = "*";
-  _2h3.innerHTML = order.mrp;
+  _2h3.innerHTML = order.mrp + " ";
+  span3.innerHTML = " =";
   _1h1.innerHTML = order.totalPrice;
 
 
-};
+}
 
-data.forEach(order => buildCartItem(order));
+MQTTconnect();
+
+
+data.forEach(function (order) {
+  buildCartItem(order)
+})

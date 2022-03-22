@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Empty Cart</title>
 
@@ -38,6 +39,9 @@
     .side{
         border-left:dotted rgb(187, 185, 185) ;
     }
+    .equal{
+        margin-left: 10px;
+    }
 </style>
 
 <body>
@@ -54,7 +58,7 @@
 
         <div class="wallet flex ">
             <ul class="flex text-center items-center flex-row justify-center">
-                <li class="mr-2 ml-4"><img src="/assets/wallet-3.png" alt=""></li>
+                <li class="mr-2 ml-4"><img src="./assets/wallet-3.png" alt=""></li>
                 <li class="mr-2 text-base font-semibold 2xl:text-xl text-txt ml-4">Wallet Balance</li>
                 <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt ">&#8377; 550</li>
             </ul>

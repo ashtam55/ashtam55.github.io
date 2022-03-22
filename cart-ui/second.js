@@ -32,9 +32,10 @@ const setText = (text) => {
 const checkAuth = () => {
   return new Promise((resolve, reject) => {
     setText('Checking Auth...')
+    console.log(localStorage.getItem("User"))
     setTimeout(() => {
       resolve(true);
-    }, 2000);
+    }, 5000);
   });
 };
 

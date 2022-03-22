@@ -46,13 +46,14 @@ docReady(function () {
 
 function processQRResults(_qrdata) {
 
-    console.log(_qrdata.message)
+    console.log(_qrdata.data.user_id)
 
     if (_qrdata.message.toString() == "You are logged out") {
         // alert("Please login again")
     }
     else {
         // alert(_qrdata.message);
+        localStorage.setItem("User",_qrdata.data.user_id);
         window.location.href = "second.html";
 
     }
