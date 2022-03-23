@@ -43,6 +43,12 @@
     .equal{
         margin-left: 10px;
     }
+    .image{
+        max-width: 10%;
+    }
+    main{
+        padding-bottom: 10%;
+    }
 </style>
 
 <body>
@@ -74,31 +80,32 @@
             
 
         </div>
-            <div class="footer">
-                <div class="grid grid-flow-row-dense grid-cols-1  p-3">
-                    <div class="btn flex flex-row justify-center rounded-full bg-yellow-500">
-                        <div class="flex flex-col  align-left mb-4 mt-2 ">
-                            <h6 class="text-base 2xl:text-md  text-txt">Total Saving &#8377; 15</h6>
-                            <h2 class="text-base 2xl:text-2xl font-semibold text-txt">Cart Total Balance &#8377; 1855
-                            </h2>
+           
+    </main>
+    <div class="footer">
+        <div class="grid grid-flow-row-dense grid-cols-1  p-3">
+            <div class="btn flex flex-row justify-center rounded-full bg-yellow-500">
+                <div class="flex flex-col  align-left mb-4 mt-2 ">
+                    <h6 class="text-base 2xl:text-md  text-txt">Total Saving &#8377; 15</h6>
+                    <h2 class="text-base 2xl:text-2xl font-semibold text-txt">Cart Total Balance &#8377; 1855
+                    </h2>
 
-                        </div>
-                        <div class="flex flex-row">
-                            <button class="text-white bg-black rounded-full w-64 h-10 mt-5 mb-4 ml-16 btn-sm">
-                                <h3 class="text-base flex flex-row justify-center 2xl:text-lg  text-txt"> Proceed to pay
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="h-8 w-8 ml-2 rounded-full bg-yellow-500 shadow-sm" fill="none"
-                                        viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
-                                </h3>
-                            </button>
-                        </div>
-                    </div>
+                </div>
+                <div class="flex flex-row">
+                    <button onclick="location.href='order.html';" class="text-white bg-black rounded-full w-64 h-10 mt-5 mb-4 ml-16 btn-sm">
+                        <h3 class="text-base flex flex-row justify-center 2xl:text-lg  text-txt"> Proceed to pay
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="h-8 w-8 ml-2 rounded-full bg-yellow-500 shadow-sm" fill="none"
+                                viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </h3>
+                    </button>
                 </div>
             </div>
-    </main>
+        </div>
+    </div>
 </body>
 <script type="text/javascript" src="cart.js"></script>
 

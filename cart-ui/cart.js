@@ -1,5 +1,5 @@
 //DummyData
-const data = [
+const orderList = [
   // {
   //   id: 1,
   //   img: "./assets/tatasalt_og 1.png",
@@ -55,13 +55,12 @@ var walletBalElement = document.getElementById("wallet_bal");
 var userMobile = localStorage.getItem("userMobile");
 var userName = localStorage.getItem("userName");
 
-if(userName != ""){
-  nameElement.innerHTML = "Hi "+ userName;
+if (userName != "") {
+  nameElement.innerHTML = "Hi " + userName;
   console.log("dasdadasd");
-}
-else{
-  nameElement.innerHTML = "Hi "+ userMobile;
-  localStorage.setItem("userMobile",userMobile);
+} else {
+  nameElement.innerHTML = "Hi " + userMobile;
+  localStorage.setItem("userMobile", userMobile);
 }
 walletBalElement.innerHTML = localStorage.getItem("walletBalance");
 
@@ -69,15 +68,92 @@ function onFailure(message) {
   console.log("Connection Attempt to Host " + host + "Failed");
   setTimeout(MQTTconnect, reconnectTimeout);
 }
+async function fetchProductDetails(url = '', data,body) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    // mode: 'cors', // no-cors, *cors, same-origin
+    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    // credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Authorization':'bearer '+data,
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    // redirect: 'follow', // manual, *follow, error
+    // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(body) // body data type must match "Content-Type" header
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
+}
 
 function onMessageArrived(msg) {
   out_msg = "Message received " + msg.payloadString + "<br>";
   out_msg = out_msg + "Message received Topic " + msg.destinationName;
-  
-  if (msg.destinationName == "admin/cart1/added_weight"){
+
+  if (msg.destinationName == "admin/cart1/added_weight") {
     console.log(out_msg);
-  }
-  else if(msg.destinationName == "admin/cart1/label"){
+  } else if (msg.destinationName == "admin/cart1/label") {
+    console.log(out_msg);
+    //removing colon from string
+    var data = JSON.parse(msg.payloadString);
+    // data = String(data.label).split(":");
+    console.log(data.label,data.product_id);
+    var bodyToSend = {
+      "export":false,
+      "search":"number",
+      "value":data.product_id,
+      "warehouse":"STR01"
+      }
+    fetchProductDetails("http://api.djtretailers.com/item/adminitems/?page_number=100&page_size=1",localStorage.getItem("UserToken"),bodyToSend)
+    .then(data => {
+      console.log(data.data.items[0].rating); // JSON data parsed by `data.json()` call
+
+      //name, imageUrl, ratings, strikePrice, MRP
+      var productName = data.data.items[0].name;
+      var imgURL = data.data.items[0].images[0].url;
+      var ratings = data.data.items[0].rating;
+      var strikePrice = data.data.items[0].warehouses.MRP;
+      var mrp = data.data.items[0].warehouses.ASP;
+      var prodNumber = data.data.items[0].number;
+      console.log(mrp,strikePrice);
+      var singleObj = {}
+      singleObj['img'] = imgURL;
+      singleObj['name'] = productName;
+      singleObj['star'] = ratings;
+      singleObj['strikePrice'] = strikePrice;
+      singleObj['mrp'] = mrp;
+      singleObj['id'] = prodNumber;
+      orderList.push(singleObj);
+      orderList.forEach(function (order) {
+  buildCartItem(order)
+})
+      // return 
+    })
+    
+  // {
+  //   id: 4,
+  //   img: "./assets/tatasalt_og 1.png",
+  //   name: "Head & Shoulders",
+  //   star: "3",
+  //   weight: "1kg",
+  //   strikePrice: "₹50",
+  //   mrp: "₹28",
+  //   quantity: 2,
+  //   totalPrice: "₹56.00"
+  // }
+
+    // var listOfObjects = [];
+    // var a = ["car", "bike", "scooter"];
+    // a.forEach(function (entry) {
+    //   var singleObj = {}
+    //   singleObj['type'] = 'vehicle';
+    //   singleObj['value'] = entry;
+    //   listOfObjects.push(singleObj);
+    // });
+
+
+  } else if (msg.destinationName == "admin/cart1/removed_weight") {
     console.log(out_msg);
   }
 
@@ -89,6 +165,8 @@ function onConnect() {
   console.log("Connected ");
   mqtt.subscribe("admin/cart1/added_weight");
   mqtt.subscribe("admin/cart1/label");
+  mqtt.subscribe("admin/cart1/removed_weight");
+
 
   // message = new Paho.MQTT.Message("Hello World");
   // message.destinationName = "sensor2";
@@ -206,6 +284,6 @@ const buildCartItem = function (order) {
 MQTTconnect();
 
 
-data.forEach(function (order) {
-  buildCartItem(order)
-})
+// data.forEach(function (order) {
+//   buildCartItem(order)
+// })
