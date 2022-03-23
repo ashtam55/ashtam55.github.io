@@ -54,7 +54,7 @@ var nameElement = document.getElementById("name");
 var walletBalElement = document.getElementById("wallet_bal");
 var userMobile = localStorage.getItem("userMobile");
 var userName = localStorage.getItem("userName");
-
+var waitingVar = {};
 if (userName != "") {
   nameElement.innerHTML = "Hi " + userName;
   console.log("dasdadasd");
@@ -93,6 +93,25 @@ function onMessageArrived(msg) {
 
   if (msg.destinationName == "admin/cart1/added_weight") {
     console.log(out_msg);
+    var data = JSON.parse(msg.payloadString);
+
+    var prodNumber = data.product_id;
+    var quantity = data.quantity;
+    var total;
+    console.log("Yo ",prodNumber, quantity);
+    let obj = orderList.find((o, i) => {
+      if (o.id === prodNumber) {
+        console.log("asd");
+        orderList[i].quantity = parseInt(o.quantity,10) + parseInt(quantity,10);
+        // console.log(o.quantity);
+           // stop searching
+      }
+      console.log(orderList);
+
+  });
+  // {"label" : "patanjali-honey-500g“,”product_id”:”202442","total_cart_weight":"2994.651855","product_weight_from_sensor":"721.254150","product_weight_from_label":"1000”, “quantity”:”2”}
+  // {"label" : "patanjali-honey-500g","product_id":"202442"}
+//{"label" : "bournvita-","product_id":"201352","total_cart_weight":"25.218994","product_weight_from_sensor":"502.397400","product_weight_from_label":"5000","quantity":"1"}
   } else if (msg.destinationName == "admin/cart1/label") {
     //Check item if it exist in list
 
@@ -117,7 +136,6 @@ function onMessageArrived(msg) {
     fetchProductDetails("http://api.djtretailers.com/item/adminitems/?page_number=100&page_size=1",localStorage.getItem("UserToken"),bodyToSend)
     .then(data => {
       console.log(data.data.items[0].rating); // JSON data parsed by `data.json()` call
-
       //name, imageUrl, ratings, strikePrice, MRP
       var productName = data.data.items[0].name;
       var imgURL = data.data.items[0].images[0].url;
@@ -133,6 +151,7 @@ function onMessageArrived(msg) {
       singleObj['strikePrice'] = strikePrice;
       singleObj['mrp'] = mrp;
       singleObj['id'] = prodNumber;
+      singleObj['quantity'] = 0;
 
       // return 
       let obj = orderList.find(o => o.id === prodNumber);
@@ -141,19 +160,17 @@ function onMessageArrived(msg) {
       if(typeof obj === "undefined"){
         console.log("---->>>Adding Item in List")
         orderList.push(singleObj);
-
-        orderList.forEach(function (order) {
-          buildCartItem(order)
-                })
+        buildCartItem(singleObj);
+        // orderList = [];
+        // orderList.forEach(function (order) {
+        //   buildCartItem(order)
+        // })
 
       }
-      else if(obj.prodNumber === prodNumber){
+      else {
         console.log(" Item Already in List..Updating if requires")
 
       }
-
-      // console.log(obj);
-
     })
     
   // {
