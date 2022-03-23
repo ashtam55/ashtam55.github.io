@@ -94,11 +94,20 @@ function onMessageArrived(msg) {
   if (msg.destinationName == "admin/cart1/added_weight") {
     console.log(out_msg);
   } else if (msg.destinationName == "admin/cart1/label") {
+    //Check item if it exist in list
+
     console.log(out_msg);
     //removing colon from string
     var data = JSON.parse(msg.payloadString);
     // data = String(data.label).split(":");
     console.log(data.label,data.product_id);
+    
+
+
+
+
+
+
     var bodyToSend = {
       "export":false,
       "search":"number",
@@ -124,11 +133,27 @@ function onMessageArrived(msg) {
       singleObj['strikePrice'] = strikePrice;
       singleObj['mrp'] = mrp;
       singleObj['id'] = prodNumber;
-      orderList.push(singleObj);
-      orderList.forEach(function (order) {
-  buildCartItem(order)
-})
+
       // return 
+      let obj = orderList.find(o => o.id === prodNumber);
+            console.log(obj);
+
+      if(typeof obj === "undefined"){
+        console.log("---->>>Adding Item in List")
+        orderList.push(singleObj);
+
+        orderList.forEach(function (order) {
+          buildCartItem(order)
+                })
+
+      }
+      else if(obj.prodNumber === prodNumber){
+        console.log(" Item Already in List..Updating if requires")
+
+      }
+
+      // console.log(obj);
+
     })
     
   // {
