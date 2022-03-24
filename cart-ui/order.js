@@ -2,8 +2,8 @@ var nameElement = document.getElementById("name");
 var walletBalElement = document.getElementById("wallet_bal");
 var userMobile = localStorage.getItem("userMobile");
 var userName = localStorage.getItem("userName");
-var walletBalance = localStorage.getItem("walletBalance");
-var totalCartBalance = localStorage.getItem("totalCartBalance");
+var walletBalance = parseInt(localStorage.getItem("walletBalance"),10);
+var totalCartBalance = parseInt(localStorage.getItem("totalCartBalance"),10);
 var waitingVar = {};
 if (userName != "") {
   nameElement.innerHTML = "Hi " + userName;
@@ -38,12 +38,12 @@ async function fetchFromWallet(url = '', data, body) {
 function payment(){
     console.log("Deerika Wallet Payment Initiated");
     console.log(totalCartBalance,walletBalance);
-    // if(totalCartBalance > walletBalance ){
-    //     console.log("Insufficient Funds");
-    //     alert("Insufficient Funds. Please add");
-    // }
-    // else if(walletBalance > totalCartBalance || totalCartBalance < walletBalance){
-    //     console.log("Processing payment");
+    if(totalCartBalance > walletBalance ){
+        console.log("Insufficient Funds");
+        alert("Insufficient Funds. Please add");
+    }
+    else if(walletBalance > totalCartBalance || totalCartBalance < walletBalance){
+        console.log("Processing payment");
 
         
         var bodyToSend = {
@@ -66,6 +66,6 @@ function payment(){
             })
 
       
-    // }
+    }
 
 }
