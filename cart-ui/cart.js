@@ -74,7 +74,7 @@ function onMessageArrived(msg) {
       orderList.forEach(function (order) {
         buildCartItem(order)
          cartTotal = parseInt(order.totalPrice,10) + cartTotal;
-         savingsTotal = parseInt(order.strikePrice,10) + savingsTotal;
+         savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
          
       })
 
@@ -82,6 +82,7 @@ function onMessageArrived(msg) {
       console.log("cart total -----",cartTotal, savingsTotal);
       document.getElementById("total").innerHTML = cartTotal;
       document.getElementById("savings").innerHTML = savingsTotal - cartTotal;
+      localStorage.setItem("totalCartBalance", cartTotal);
       // console.log("cart total",cartTotal, savingsTotal);
 
 

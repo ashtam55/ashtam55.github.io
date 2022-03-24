@@ -25,7 +25,7 @@
  ;">
 
         <div class="title text-center  items-center flex-row justify-center flex">
-            <h1 class="text-base font-semibold 2xl:text-xl text-txt" >Hi Ashtam</h1>
+            <h1 id="name" class="text-base font-semibold 2xl:text-xl text-txt" >Hi Ashtam</h1>
         </div>
 
         <div class="logo ml-16 items-center">
@@ -35,8 +35,8 @@
         <div class="wallet flex ">
             <ul class="flex text-center items-center flex-row justify-center">
                 <li class="mr-2 ml-4"><img src="./assets/wallet-3.png" alt=""></li>
-                <li class="mr-2 text-base font-semibold 2xl:text-xl text-txt ml-4">Wallet Balance</li>
-                <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt ">&#8377; 550</li>
+                <li class="mr-2 text-base font-semibold 2xl:text-xl text-txt ml-4">Wallet Balance ₹</li>
+                <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt "><label id="wallet_bal"></li>
             </ul>
         </div>
 
@@ -47,8 +47,8 @@
         ; border-radius: 9.51px;">
             <div class="flex flex-row justify-around rounded-full items-center align-center justify-center mt-36">
                 <div class="flex flex-col mt-5">
-                    <h3 class="text-txt text-base 2xl:text-2xl"> Available Balance</h2>
-                    <h2 class="text-txt text-base 2xl:text-3xl text-green-700 font-semibold">&#8377; 100</h2>
+                    <h3 class="text-txt text-base 2xl:text-2xl"> Amount to be Paid</h2>
+                    <h2 id="totalCartBalance" class="text-txt text-base 2xl:text-3xl text-green-700 font-semibold"></h2>
 
                 </div>
                 <div class="flex mt-5 items-center">
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <br><br><br>
-            <div class="button ">
+            <div id="deerikaWalletPayment" class="button " onclick="payment()">
                 <div class="flex text-center justify-center items-center mr-2" style="
                 height: 52.28699493408203px;
                 width: 500.9461975097656px;
@@ -64,7 +64,7 @@
                 background: rgba(252, 190, 0, 1);
                 ">
                     <img src="./assets/_Group_.png" alt="">
-                    Pay with Deerika Wallet &#8377; 112.00
+                    Pay with Deerika Wallet
                 </div>
             </div>
 
@@ -80,7 +80,7 @@ background: rgba(7, 38, 84, 1);
 
                 ">
                     <img src="./assets/Group.png" alt="">
-                    Pay Online &#8377; 112.00
+                    Pay Online
                 </div>
             </div>
 
@@ -88,6 +88,7 @@ background: rgba(7, 38, 84, 1);
         </div>
     
     </main>
+    <script type="text/javascript" src="order.js"></script>
 
 </body>
 </html>

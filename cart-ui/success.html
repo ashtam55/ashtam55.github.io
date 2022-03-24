@@ -25,7 +25,7 @@
  ;">
 
         <div class="title text-center  items-center flex-row justify-center flex">
-            <h1 class="text-base font-semibold 2xl:text-xl text-txt" >Hi Ashtam</h1>
+            <h1 id = "name" class="text-base font-semibold 2xl:text-xl text-txt" >Hi Ashtam</h1>
         </div>
 
         <div class="logo ml-44 items-center">
@@ -34,9 +34,9 @@
 
         <div class="wallet flex ">
             <ul class="flex text-center items-center flex-row justify-center">
-                <li class="mr-2 ml-4"><img src="/assets/wallet-3.png" alt=""></li>
-                <li class="mr-2 text-base font-semibold 2xl:text-xl text-txt ml-4">Wallet Balance</li>
-                <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt ">&#8377; 550</li>
+                <li class="mr-2 ml-4"><img src="./assets/wallet-3.png" alt=""></li>
+                <li class="mr-2 text-base font-semibold 2xl:text-xl text-txt ml-4">Wallet Balance ₹</li>
+                <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt "><label id="wallet_bal"></li>
             </ul>
         </div>
 
@@ -48,12 +48,12 @@
                <img src="./assets/64787-success 1.png" width="300px" alt="">
            </div>
            <div class="flex items-center flex-col mt-10">
-            <h2 class="text-txt text-base 2xl:text-xl">Order Placed!</h2>
+            <h2 class="text-txt text-base 2xl:text-xl">Success YaY!</h2>
 <br><br>
-            <p>Your order will be delivered soon. <br>
+            <p>Your payment is completed. <br>
                 Thank you for choosing Deerika !</p>
              <br><br>
-             <button style="height: 44px;
+             <button onclick="location.href='index.html';" style="height: 44px;
              width: 382px;
              left: 0px;
              top: 8px;
@@ -64,6 +64,7 @@
        </div>
     
     </main>
+    <script type="text/javascript" src="success.js"></script>
 
 </body>
 </html>
