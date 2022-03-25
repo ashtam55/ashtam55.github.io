@@ -177,6 +177,70 @@ function onMessageArrived(msg) {
 
   } else if (msg.destinationName == "admin/cart1/removed_weight") {
     console.log(out_msg);
+
+    var data = JSON.parse(msg.payloadString);
+    var prodNumber = data.product_id;
+    var quantity = data.quantity;
+    let obj = orderList.find((o, i) => {
+      if (o.id === prodNumber) {
+        console.log("Found!!");
+        //Updating in OrderList
+        var initialQuantity = parseInt(o.quantity, 10);
+        if(initialQuantity > quantity){
+          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
+
+        }
+        else {
+          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
+        }
+        total = parseInt(o.mrp, 10) * parseInt(orderList[i].quantity, 10);
+        orderList[i].totalPrice = total;
+
+        // buildCartItem(orderList[i]);
+        // console.log(o.quantity);
+        // stop searching
+      }
+      else{
+        console.log("Product not found which is removed.");
+      }
+
+      // buildCartItem(orderList);
+      $('.row').remove();
+      console.log("Removed");
+
+      console.log(orderList);
+      var cartTotal = 0;
+      var savingsTotal = 0;
+      orderList.forEach(function (order,i) {
+        if(parseInt(order.quantity,10) != 0){
+          console.log("Building items");
+
+          buildCartItem(order)
+          cartTotal = parseInt(order.totalPrice,10) + cartTotal;
+          savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
+        }
+        else{
+          console.log("Not Building for qty 0");
+          orderList.splice[i,1];
+
+        }         
+      })
+
+
+      console.log("cart total -----",cartTotal, savingsTotal);
+      document.getElementById("total").innerHTML = cartTotal;
+      document.getElementById("savings").innerHTML = savingsTotal - cartTotal;
+      localStorage.setItem("totalCartBalance", cartTotal);
+      // console.log("cart total",cartTotal, savingsTotal);
+
+
+
+    });
+
+
+
+
+
   }
 
 }
