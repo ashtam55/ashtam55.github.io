@@ -70,13 +70,13 @@ if (userMobile != ""){
 }
 
 div.innerHTML = "Generating Token";
-generatingToken('https://api.djtretailers.com/smartauth/toke-generator/', JSON.parse(json))
+generatingToken('http://api.djtretailers.com/smartauth/toke-generator/', JSON.parse(json))
   .then(data => {
     console.log(data); // JSON data parsed by `data.json()` call
 
     console.log(data.access_token); // JSON data parsed by `data.json()` call
     localStorage.setItem("UserToken",data.access_token);
-    var url = 'https://api.djtretailers.com/walletAdmin/user_details/?page_num=1&page_size=10&mobile='+ userMobile
+    var url = 'http://api.djtretailers.com/walletAdmin/user_details/?page_num=1&page_size=10&mobile='+ userMobile
     div.innerHTML = "Fetching Wallet Balance";
     return fetchWallet(url,data.access_token);
     
