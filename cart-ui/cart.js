@@ -1,7 +1,7 @@
 var orderList = [];
 var mqtt;
 var reconnectTimeout = 2000;
-var host = "15.206.66.251";
+var host = "15.207.222.251";
 var port = 8083;
 var nameElement = document.getElementById("name");
 var walletBalElement = document.getElementById("wallet_bal");
@@ -45,7 +45,7 @@ function onMessageArrived(msg) {
   out_msg = out_msg + "Message received Topic " + msg.destinationName;
 
   if (msg.destinationName == "admin/cart1/added_weight") {
-    // console.log(out_msg);
+    console.log(msg);
     var data = JSON.parse(msg.payloadString);
     var prodNumber = data.product_id;
     var quantity = data.quantity;
@@ -72,9 +72,23 @@ function onMessageArrived(msg) {
       var cartTotal = 0;
       var savingsTotal = 0;
       orderList.forEach(function (order) {
-        buildCartItem(order)
-         cartTotal = parseInt(order.totalPrice,10) + cartTotal;
-         savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
+
+        if(parseInt(order.quantity,10) != 0){
+          console.log("Building items");
+
+          buildCartItem(order)
+          cartTotal = parseInt(order.totalPrice,10) + cartTotal;
+          savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
+        }
+        else{
+          console.log("Not Building for qty 0");
+          orderList.splice[i,1];
+
+        } 
+
+        // buildCartItem(order)
+        //  cartTotal = parseInt(order.totalPrice,10) + cartTotal;
+        //  savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
          
       })
 
@@ -236,11 +250,18 @@ function onMessageArrived(msg) {
 
 
     });
+  }
+  else if(msg.destinationName == "admin/cart1/na"){
+      console.log(out_msg);
+      if(msg.payloadString == "added"){
+        alert("Please re-add the Item again");
+        
+      }
+      else if(msg.payloadString == "removed"){
+        alert("Please remove the Item again");
 
-
-
-
-
+      }
+      
   }
 
 }
@@ -252,6 +273,7 @@ function onConnect() {
   mqtt.subscribe("admin/cart1/added_weight");
   mqtt.subscribe("admin/cart1/label");
   mqtt.subscribe("admin/cart1/removed_weight");
+  mqtt.subscribe("admin/cart1/na");
 
 
   // message = new Paho.MQTT.Message("Hello World");
@@ -274,6 +296,7 @@ function MQTTconnect() {
   mqtt.onMessageArrived = onMessageArrived
 
   mqtt.connect(options); //connect
+  
 }
 
 const buildCartItem = function (order) {
@@ -390,3 +413,28 @@ function myFunction() {
     header.classList.remove("sticky");
   }
 }
+
+
+// setInterval(() => {MQTTconnect()}, 10000);
+
+
+fetch("./768.json").then(response => {
+  return response.json();
+})
+.then (function(data){
+  const res = data;
+  console.log(res);
+
+  var element = {}, cart = [];
+
+
+  Object.entries(res).forEach((entry) => {
+    const [key, value] = entry;
+    // element.id = value;
+    // element.quantity = key;
+    // cart.push({element: element});
+    // console.log(cart);
+    console.log(value.name);
+  });    
+
+});

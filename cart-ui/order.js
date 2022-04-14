@@ -51,9 +51,11 @@ function payment(){
             "amount": parseInt(totalCartBalance,10),
             "description": "Amount debited from wallet"
             }
-            fetchFromWallet("http://a0081d9e6be6746e9bf613dc166a53ac-75257c64ea2c0cf3.elb.ap-northeast-3.amazonaws.com/walletAdmin/debit_wallet/", localStorage.getItem("UserToken"), bodyToSend)
+            console.log(bodyToSend);
+            console.log(localStorage.getItem("UserToken"));
+            fetchFromWallet("http://api.djtretailers.com/walletAdmin/debit_wallet/", localStorage.getItem("UserToken"), bodyToSend)
             .then(data => {
-                console.log(data.success);
+                console.log(data);
                 if(data.success == true){
                 console.log(data.amount);
                 localStorage.setItem("walletBalance",data.amount);

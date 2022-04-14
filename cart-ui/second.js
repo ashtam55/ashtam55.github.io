@@ -63,17 +63,20 @@ if(userName != ""){
 }
 else{
   document.getElementById('name').innerHTML = "Hi "+ userMobile;
+  
+}
+if (userMobile != ""){
   localStorage.setItem("userMobile",userMobile);
 }
 
 div.innerHTML = "Generating Token";
-generatingToken('http://aaf0c21919fc7446a80a01b571d85edd-502ca277c7a8573b.elb.ap-northeast-3.amazonaws.com/auth/toke-generator/', JSON.parse(json))
+generatingToken('http://api.djtretailers.com/smartauth/toke-generator/', JSON.parse(json))
   .then(data => {
     console.log(data); // JSON data parsed by `data.json()` call
 
     console.log(data.access_token); // JSON data parsed by `data.json()` call
     localStorage.setItem("UserToken",data.access_token);
-    var url = 'http://a0081d9e6be6746e9bf613dc166a53ac-75257c64ea2c0cf3.elb.ap-northeast-3.amazonaws.com/walletAdmin/user_details/?page_num=1&page_size=10&mobile='+ userMobile
+    var url = 'http://api.djtretailers.com/walletAdmin/user_details/?page_num=1&page_size=10&mobile='+ userMobile
     div.innerHTML = "Fetching Wallet Balance";
     return fetchWallet(url,data.access_token);
     
