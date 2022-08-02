@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+
     <title>Empty Cart</title>
-  
+
 </head>
 <style>
-    *{
+    * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
 </style>
+
 <body>
- <div class="flex flex-row justify-between bg-white shadow-sm shadow-radiallayer p-5 justify-center text-center align-center">
+    <div
+        class="flex flex-row justify-between bg-white shadow-sm shadow-radiallayer p-5 justify-center text-center align-center">
 
         <div class="title text-center  items-center flex-row justify-center flex">
-            <h1 id="name" class="text-base font-semibold 2xl:text-xl text-txt" ></h1>
+            <h1 id="name" class="text-base font-semibold 2xl:text-xl text-txt"></h1>
         </div>
 
         <div class="logo ml-16 items-center">
@@ -30,27 +35,30 @@
             <ul class="flex text-center items-center flex-row justify-center">
                 <li class="mr-2 ml-4"><img src="/assets/wallet-3.png" alt=""></li>
                 <li class="mr-2 text-base font-semibold 2xl:text-xl text-txt ml-4">Wallet Balance</li>
-                <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt "><label id = "walletBalance">...</label></li>
+                <li class="mr-2 text-green-700 ml-4 text-base font-semibold 2xl:text-3xl text-txt "><label
+                        id="walletBalance">...</label></li>
             </ul>
         </div>
 
     </div>
 
-    <main style="background-image: url('./assets/bg.png');height: 85.5vh ;background-size: cover; background-repeat: no-repeat; background-position: center;">
+    <main
+        style="background-image: url('./assets/bg.png');height: 85.5vh ;background-size: cover; background-repeat: no-repeat; background-position: center;">
 
-    <div class=" flex flex-col">
+        <div class=" flex flex-col">
 
-        <div class=" flex flex-col items-center mt-20 mr-24">
-            <h1 class="text-center  text-txt text-base font-semibold 2xl:text-xl text-opacity-10 text-txt-light "><label id = "loadingText">Validating User....</label></h1>
+            <div class=" flex flex-col items-center mt-20 mr-24">
+                <h1 class="text-center  text-txt text-base font-semibold 2xl:text-xl text-opacity-10 text-txt-light ">
+                    <label id="loadingText">Validating User....</label></h1>
+            </div>
+
+            <div class="cart_image  flex flex-col items-center align-center mr-28 mt-20">
+                <img class="animate-bounce " src="./assets/animation_.png" alt="">
+            </div>
+
         </div>
-
-        <div class="cart_image  flex flex-col items-center align-center mr-28 mt-20"> 
-            <img class="animate-bounce " src="./assets/animation_.png" alt="">
-        </div>
-
-    </div>
     </main>
-    
+
 
 </body>
 

@@ -11,6 +11,7 @@ var userID = localStorage.getItem("UserId");
 localStorage.setItem("totalCartBalance", 0);
 console.log(userID);
 var waitingVar = {};
+var orderListforBarcode = [];
 
 
 const firebaseConfig = {
@@ -142,13 +143,13 @@ function onMessageArrived(msg) {
     var quantity = data.quantity;
     var total = 55;
     // console.log("Yo ",prodNumber, quantity);
-    let obj = orderList.find((o, i) => {
-      if (o.id === prodNumber) {
+    let obj = orderList.find((o, i) => { //value, key
+      if (o.item_number === prodNumber) {
         console.log("Found!!");
         //Updating in OrderList
-        orderList[i].quantity = parseInt(o.quantity, 10) + parseInt(quantity, 10);
-        total = parseInt(o.mrp, 10) * parseInt(orderList[i].quantity, 10);
-        orderList[i].totalPrice = total;
+        orderList[i].fulfilled_quantity = parseInt(o.fulfilled_quantity, 10) + parseInt(quantity, 10);
+        total = parseInt(o.mrp, 10) * parseInt(orderList[i].fulfilled_quantity, 10);
+        orderList[i].item_total = total;
 
         // buildCartItem(orderList[i]);
         // console.log(o.quantity);
@@ -164,12 +165,12 @@ function onMessageArrived(msg) {
       var savingsTotal = 0;
       orderList.forEach(function (order) {
 
-        if (parseInt(order.quantity, 10) != 0) {
+        if (parseInt(order.fulfilled_quantity, 10) != 0) {
           console.log("Building items");
 
           buildCartItem(order)
-          cartTotal = parseInt(order.totalPrice, 10) + cartTotal;
-          savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.quantity, 10) + savingsTotal;
+          cartTotal = parseInt(order.item_total, 10) + cartTotal;
+          savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.fulfilled_quantity, 10) + savingsTotal;
         } else {
           console.log("Not Building for qty 0");
           orderList.splice[i, 1];
@@ -177,7 +178,7 @@ function onMessageArrived(msg) {
         }
 
         // buildCartItem(order)
-        //  cartTotal = parseInt(order.totalPrice,10) + cartTotal;
+        //  cartTotal = parseInt(order.item_total,10) + cartTotal;
         //  savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
 
       })
@@ -189,6 +190,7 @@ function onMessageArrived(msg) {
       localStorage.setItem("totalCartBalance", cartTotal);
       // console.log("cart total",cartTotal, savingsTotal);
 
+      localStorage.setItem("items", JSON.stringify(orderList));
 
 
     });
@@ -228,17 +230,39 @@ function onMessageArrived(msg) {
         var prodNumber = data.data.items[0].number;
         console.log(mrp, strikePrice);
         var singleObj = {}
-        singleObj['img'] = imgURL;
-        singleObj['name'] = productName;
+        // singleObj['img'] = imgURL;
+        // singleObj['name'] = productName;
+        // singleObj['star'] = ratings;
+        // singleObj['strikePrice'] = strikePrice;
+        // singleObj['mrp'] = mrp;
+        // singleObj['id'] = prodNumber;
+        // singleObj['quantity'] = 0;
+        // singleObj['weight'] = " ";
+
+
+
+        singleObj['image_url'] = imgURL;
+        singleObj['item_name'] = productName;
+        // singleObj['star'] = ratings;
+        // singleObj['strikePrice'] = strikePrice;
         singleObj['star'] = ratings;
         singleObj['strikePrice'] = strikePrice;
         singleObj['mrp'] = mrp;
-        singleObj['id'] = prodNumber;
-        singleObj['quantity'] = 0;
+
+        singleObj['unit_price'] = {
+          "asp": mrp,
+          "mrp": strikePrice
+        };
+        singleObj['item_number'] = prodNumber;
+        singleObj['fulfilled_quantity'] = 0;
         singleObj['weight'] = " ";
+        singleObj['hsn'] = data.data.items[0].hsn;
+        singleObj['tax'] = data.data.items[0].tax;
+        singleObj['item_varient'] = {};
+
 
         // return 
-        let obj = orderList.find(o => o.id === prodNumber);
+        let obj = orderList.find(o => o.item_number === prodNumber);
         console.log(obj);
 
         if (typeof obj === "undefined") {
@@ -250,7 +274,7 @@ function onMessageArrived(msg) {
           // orderList.forEach(function (order) {
           //   buildCartItem(order)
           // })
-
+          console.log(JSON.stringify(orderList));
         } else {
           console.log(" Item Already in List..Updating if requires")
 
@@ -266,7 +290,7 @@ function onMessageArrived(msg) {
     //   strikePrice: "₹50",
     //   mrp: "₹28",
     //   quantity: 2,
-    //   totalPrice: "₹56.00"
+    //   item_total: "₹56.00"
     // }
 
     // var listOfObjects = [];
@@ -286,18 +310,18 @@ function onMessageArrived(msg) {
     var prodNumber = data.product_id;
     var quantity = data.quantity;
     let obj = orderList.find((o, i) => {
-      if (o.id === prodNumber) {
+      if (o.item_number === prodNumber) {
         console.log("Found!!");
         //Updating in OrderList
-        var initialQuantity = parseInt(o.quantity, 10);
+        var initialQuantity = parseInt(o.fulfilled_quantity, 10);
         if (initialQuantity > quantity) {
-          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
+          orderList[i].fulfilled_quantity = initialQuantity - parseInt(quantity, 10);
 
         } else {
-          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
+          orderList[i].fulfilled_quantity = initialQuantity - parseInt(quantity, 10);
         }
-        total = parseInt(o.mrp, 10) * parseInt(orderList[i].quantity, 10);
-        orderList[i].totalPrice = total;
+        total = parseInt(o.mrp, 10) * parseInt(orderList[i].fulfilled_quantity, 10);
+        orderList[i].item_total = total;
 
         // buildCartItem(orderList[i]);
         // console.log(o.quantity);
@@ -314,16 +338,15 @@ function onMessageArrived(msg) {
       var cartTotal = 0;
       var savingsTotal = 0;
       orderList.forEach(function (order, i) {
-        if (parseInt(order.quantity, 10) != 0) {
+        if (parseInt(order.fulfilled_quantity, 10) != 0) {
           console.log("Building items");
 
           buildCartItem(order)
-          cartTotal = parseInt(order.totalPrice, 10) + cartTotal;
-          savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.quantity, 10) + savingsTotal;
+          cartTotal = parseInt(order.item_total, 10) + cartTotal;
+          savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.fulfilled_quantity, 10) + savingsTotal;
         } else {
           console.log("Not Building for qty 0");
           orderList.splice[i, 1];
-
         }
       })
 
@@ -334,6 +357,7 @@ function onMessageArrived(msg) {
       localStorage.setItem("totalCartBalance", cartTotal);
       // console.log("cart total",cartTotal, savingsTotal);
 
+      localStorage.setItem("items", JSON.stringify(orderList));
 
 
     });
@@ -361,14 +385,88 @@ function onMessageArrived(msg) {
 
   } else if (topic == "barcode") {
 
-    var data = JSON.parse(msg.payloadString);
-    console.log(data.ID);
-    var bodyToSend = {}
-    fetchProductDetailsUsingBarcode("http://api.djtretailers.com/collection/getsingleitem?search=barcode&value=" + data.ID, localStorage.getItem("UserToken"))
-      .then(data => {
-        console.log("Cart", data)
-      })
+    // var data = JSON.parse(msg.payloadString);
+    // console.log(data.ID);
+    // var bodyToSend = {}
+    // fetchProductDetailsUsingBarcode("http://api.djtretailers.com/collection/getsingleitem?search=barcode&value=" + data.ID, localStorage.getItem("UserToken"))
+    //   .then(data => {
+    //     console.log("Cart", data)
+    //     // var data = JSON.parse(data);
+    //     var productName = data.data[0].name;
+    //     var imgURL = data.data[0].images[0].url;
+    //     var ratings = data.data[0].rating;
+    //     var strikePrice = data.data[0].warehouses[0].MRP;
+    //     var mrp = data.data[0].warehouses[0].ASP;
+    //     var prodNumber = data.data[0].number;
+    //     var barcodeID = data.data[0].barcode[0].barcode;
+    //     console.log(mrp, strikePrice);
+    //     var singleObj = {}
+    //     singleObj['img'] = imgURL;
+    //     singleObj['name'] = productName;
+    //     singleObj['star'] = ratings;
+    //     singleObj['strikePrice'] = strikePrice;
+    //     singleObj['mrp'] = mrp;
+    //     singleObj['id'] = prodNumber;
+    //     singleObj['quantity'] = 1;
+    //     singleObj['weight'] = "";
+    //     singleObj['item_total'] = mrp;
+    //     singleObj['barcodeId'] = barcodeID;
 
+    //     // return 
+    //     let obj = orderListforBarcode.find(o => o.id === prodNumber);
+    //     console.log(obj);
+
+    //     if (typeof obj === "undefined") {
+    //       console.log("---->>>Adding Item in List")
+
+    //       orderListforBarcode.push(singleObj);
+    //       // buildCartItem(singleObj);
+
+    //     } else {
+    //       console.log(" Item Already in List..Updating if requires")
+    //       console.log(obj.quantity, quantity);
+    //       obj.quantity = parseInt(obj.quantity, 10) + 1;
+    //       total = parseInt(obj.mrp, 10) * parseInt(obj.quantity, 10);
+    //       obj.item_total = total;
+
+    //     }
+    //     $('.row').remove();
+
+
+    //     console.log(orderListforBarcode);
+    //     var cartTotal = 0;
+    //     var savingsTotal = 0;
+    //     orderListforBarcode.forEach(function (order, i) {
+    //       if (parseInt(order.quantity, 10) != 0) {
+    //         console.log("Building items");
+
+    //         buildCartItem(order)
+    //         cartTotal = parseInt(order.item_total, 10) + cartTotal;
+    //         savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.quantity, 10) + savingsTotal;
+    //       } else {
+    //         console.log("Not Building for qty 0");
+    //         orderListforBarcode.splice[i, 1];
+
+    //       }
+
+    //     })
+
+
+    //     console.log("cart total -----", cartTotal, savingsTotal);
+    //     document.getElementById("total").innerHTML = cartTotal;
+    //     document.getElementById("savings").innerHTML = savingsTotal - cartTotal;
+    //     localStorage.setItem("totalCartBalance", cartTotal);
+
+    //   })
+
+
+
+  } else if (topic == "added_weight_barcode") {
+    var data = JSON.parse(msg.payloadString);
+    console.log(data);
+  } else if (topic == "remove_weight_barcode") {
+    var data = JSON.parse(msg.payloadString);
+    console.log(data);
   }
 }
 
@@ -402,17 +500,33 @@ function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
 
   console.log("Connected ");
-  // mqtt.subscribe("admin/cart1/added_weight");
-  // mqtt.subscribe("admin/cart1/label");
-  // mqtt.subscribe("admin/cart1/removed_weight");
-  // mqtt.subscribe("admin/cart1/na");
-  mqtt.subscribe("admin/cartv1/#");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/added_weight");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/label");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/removed_weight");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/na");
+  // mqtt.subscribe("admin/cartv1/#");
+
 
 
   // message = new Paho.MQTT.Message("Hello World");
   // message.destinationName = "sensor2";
   // message.retained = true;
   // mqtt.send(message);
+  // var payload = {
+  //   "tok": token
+  // }
+  // message = new Paho.MQTT.Message(localStorage.getItem("UserToken"));
+  // message.destinationName = "admin/cartv1/token";
+  // message.retained = false;
+  // message.setQos(0);
+  mqtt.send("admin/cartv1/token", localStorage.getItem("UserToken"), 0, false);
+
+}
+
+function onConnectionLost(err) {
+  console.log("Connection Lost!!!", err);
+  MQTTconnect();
+
 }
 
 function MQTTconnect() {
@@ -427,6 +541,7 @@ function MQTTconnect() {
     onFailure: onFailure,
   };
   mqtt.onMessageArrived = onMessageArrived
+  mqtt.onConnectionLost = onConnectionLost;
 
   mqtt.connect(options); //connect
 
@@ -504,8 +619,8 @@ const buildCartItem = function (order) {
   _2p.setAttribute("class", "text-base 2xl:text-xl text-txt ml-3");
   strike.setAttribute("class", "text-gray-400");
   //Setting Data to cards
-  img.setAttribute("src", order.img);
-  _1h2.innerHTML = order.name;
+  img.setAttribute("src", order.image_url);
+  _1h2.innerHTML = order.item_name;
   // Adding Start/rating to element
   for (let i = 0; i < order.star; i++) {
     span.innerHTML = span.innerHTML + " &#x1F31F ";
@@ -514,13 +629,14 @@ const buildCartItem = function (order) {
   strike.innerHTML = order.mrp;
   _2p.innerHTML = order.strikePrice;
   _3h2.innerHTML = "Quantity: ";
-  _1h3.innerHTML = order.quantity;
+  _1h3.innerHTML = order.fulfilled_quantity;
   span2.innerHTML = "*";
   _2h3.innerHTML = order.mrp + " ";
   span3.innerHTML = " =";
-  _1h1.innerHTML = order.totalPrice;
+  _1h1.innerHTML = order.item_total;
 
-
+  localStorage.setItem("items", JSON.stringify(orderList));
+  console.log(JSON.stringify(orderList));
 }
 
 MQTTconnect();
