@@ -51,13 +51,16 @@ function payment() {
       "amount": parseInt(totalCartBalance, 10),
       "description": "Amount debited from wallet"
     }
+
+    var bill_no = "SMARTSTORE/" + Math.floor(Math.random() * 1000) + "/8";
     var newBodyToSend = {
       "mobile": localStorage.getItem("userMobile"),
-      "wallet": "1",
+      "wallet": parseInt(totalCartBalance, 10),
       "cashback": "0",
-      "bill_no": "SMARTSTORE/1321/8",
+      "bill_no": bill_no,
       "bill_value": "1125"
     }
+    console.log(newBodyToSend)
     console.log(bodyToSend);
     console.log(localStorage.getItem("UserToken"));
     fetchFromWallet("http://dev.djtretailers.com/v2/wallet/admin/debit", localStorage.getItem("UserToken"), newBodyToSend)

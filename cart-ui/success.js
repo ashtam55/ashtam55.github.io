@@ -3,6 +3,9 @@ var walletBalElement = document.getElementById("wallet_bal");
 var userMobile = localStorage.getItem("userMobile");
 var userName = localStorage.getItem("userName");
 var walletBalance = localStorage.getItem("walletBalance");
+var deductedWalBal = localStorage.getItem("totalCartBalance");
+var totalSavings = localStorage.getItem("cartSavings");
+
 if (userName != "") {
   nameElement.innerHTML = "Hi " + userName;
   console.log("dasdadasd");
@@ -28,7 +31,7 @@ const timeoutId = setTimeout(() => controller.abort(), 15000);
 async function pushDataToSap(url = '', body) {
   // Default options are marked with *
   const response = await fetch(url, {
-    signal: controller.signal,
+    // signal: controller.signal,
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     // mode: 'cors', // no-cors, *cors, same-origin
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -66,19 +69,33 @@ jsonItems.forEach(function (order, index) {
 
 console.log(jsonItems);
 // console.log(JSON.parse(jsonItems.slice(1, -1)));
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+today = mm + '/' + dd + '/' + yyyy;
+// document.write(today);
+
+console.log(userMobile);
+var orderID = "SMART" + Math.floor(Math.random() * 10000);
+
+console.log(orderID, typeof (orderID))
+console.log(today, typeof (today))
+console.log(userMobile, typeof (userMobile))
 
 var bodyToSend = {
-  "order_id": "SMART33333",
-  "user_mobile": "8076592211",
+  "order_id": orderID,
+  "user_mobile": userMobile,
   "payment_details": {
     "payment_id": "id4",
     "pay_type": {
-      "wallet": 12,
+      "wallet": deductedWalBal,
       "cashback": 0
     },
     "paymode": "online",
-    "date_of_payment": "03/08/2022",
-    "total_amount": 500,
+    "date_of_payment": today,
+    "total_amount": deductedWalBal,
     "saving": 12
   },
   "warehouse": {
@@ -87,10 +104,26 @@ var bodyToSend = {
   "item_data": jsonItems
 }
 
+var newS = {
+  "message": "Details fetched Successfully",
+  "success": true,
+  "data": {
+    "user_id": "61d67836422ca5c08961d3bd",
+    "mobile": "8076592211",
+    "name": "Somya jain",
+    "email": "somyajain210220@gmail.com",
+    "notification_token": "fH3BmUXGRbeMl5TZ5fvHPM:APA91bEdcg4vySATBFK4RWzBtugp_WtEI6d10s0nb3lVkjCd2_rGC71y0dcx_E9ZYMZPEGGvs_kc3kWZ2Ak2_3UxYwoEfTQXMWQGyl7JPmdfSPDrWHXBcrJ7EFrHyJkoELeCFJu6Oc9z",
+    "is_member": false,
+    "membership_id": null,
+    "membership_with_free_items": 0
+  }
+}
+
 console.log(bodyToSend);
 const isEmpty = Object.keys(jsonItems).length === 0;
+
 if (!isEmpty) {
-  pushDataToSap("http://192.168.1.192:85/api/order_collection", bodyToSend)
+  pushDataToSap("http://192.168.1.192:85/api/user_details", newS)
     .then(data => {
       console.log(data);
     })

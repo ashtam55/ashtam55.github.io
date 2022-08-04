@@ -8,11 +8,12 @@ var walletBalElement = document.getElementById("wallet_bal");
 var userMobile = localStorage.getItem("userMobile");
 var userName = localStorage.getItem("userName");
 var userID = localStorage.getItem("UserId");
+var cir = document.getElementById("cir");
 localStorage.setItem("totalCartBalance", 0);
 console.log(userID);
 var waitingVar = {};
 var orderListforBarcode = [];
-
+// cir.style.backgroundColor = 'red';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA3T-3p0m-GV7a2vgdNNcLSmHjN_5Y8yGI",
@@ -187,6 +188,7 @@ function onMessageArrived(msg) {
       console.log("cart total -----", cartTotal, savingsTotal);
       document.getElementById("total").innerHTML = cartTotal;
       document.getElementById("savings").innerHTML = savingsTotal - cartTotal;
+      localStorage.setItem("cartSavings", savingsTotal - cartTotal)
       localStorage.setItem("totalCartBalance", cartTotal);
       // console.log("cart total",cartTotal, savingsTotal);
 
@@ -370,9 +372,55 @@ function onMessageArrived(msg) {
       console.log("Please remove the Item again");
       // document.getElementById("ring").style.border = "purple";
       // document.getElementById("cir").style.backgroundColor = "purple";
-      button.disabled = true
+      // button.disabled = true
 
     }
+
+  } else if (topic == "isstable") {
+    //   button.disabled = false
+    button.disabled = false
+    cir.style.backgroundColor = 'green';
+
+    console.log(out_msg);
+    // if (msg.payloadString == "stable") {
+    //   console.log("Cart is stable");
+    //   cir.style.backgroundColor = 'green';
+    //   button.disabled = false
+
+
+    // } else if (msg.payloadString == "not-stable") {
+    //   console.log("Not stable");
+    //   // document.getElementById("ring").style.border = "purple";
+    //   // document.getElementById("cir").style.backgroundColor = "purple";
+    //   cir.style.backgroundColor = 'red';
+
+    //   button.disabled = true
+
+    // }
+
+
+  } else if (topic == "notstable") {
+    //   button.disabled = false
+    button.disabled = true
+    cir.style.backgroundColor = 'red';
+
+    console.log(out_msg);
+    // if (msg.payloadString == "stable") {
+    //   console.log("Cart is stable");
+    //   cir.style.backgroundColor = 'green';
+    //   button.disabled = false
+
+
+    // } else if (msg.payloadString == "not-stable") {
+    //   console.log("Not stable");
+    //   // document.getElementById("ring").style.border = "purple";
+    //   // document.getElementById("cir").style.backgroundColor = "purple";
+    //   cir.style.backgroundColor = 'red';
+
+    //   button.disabled = true
+
+    // }
+
 
   } else if (topic == "updated_dict") {
 
@@ -382,6 +430,25 @@ function onMessageArrived(msg) {
     console.log("heloooo", data);
 
     updateFirebase(data);
+
+  } else if (topic == "r_label") {
+    // console.log("Hola");
+    // var data = JSON.parse(msg.payloadString);
+    // console.log(data.product_id);
+    // orderList.forEach(function (order, index) {
+    //   console.log(order.item_number);
+
+    //   if (order.item_number == data.product_id) {
+    //     console.log("remove this item ");
+    //     orderList.splice(index, 1);
+
+    //   }
+    // })
+    // orderList.forEach(function (order) {
+    //   buildCartItem(order);
+
+    // })
+    // console.log(orderList);
 
   } else if (topic == "barcode") {
 
@@ -504,6 +571,11 @@ function onConnect() {
   mqtt.subscribe("admin/cartv1/48b02d5f84a6/label");
   mqtt.subscribe("admin/cartv1/48b02d5f84a6/removed_weight");
   mqtt.subscribe("admin/cartv1/48b02d5f84a6/na");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/r_label");
+  mqtt.subscribe("admin/cartv1/isstable");
+  mqtt.subscribe("admin/cartv1/notstable");
+
+
   // mqtt.subscribe("admin/cartv1/#");
 
 
@@ -549,6 +621,8 @@ function MQTTconnect() {
 
 const buildCartItem = function (order) {
   // Create elements needed to build a card
+
+
 
   const div1 = document.createElement("div");
   const div2 = document.createElement("div");
