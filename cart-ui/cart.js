@@ -7,7 +7,72 @@ var nameElement = document.getElementById("name");
 var walletBalElement = document.getElementById("wallet_bal");
 var userMobile = localStorage.getItem("userMobile");
 var userName = localStorage.getItem("userName");
+var userID = localStorage.getItem("UserId");
+var cir = document.getElementById("cir");
+localStorage.setItem("totalCartBalance", 0);
+console.log(userID);
 var waitingVar = {};
+var orderListforBarcode = [];
+// cir.style.backgroundColor = 'red';
+var onFlag = 0;
+var offFlag = 1;
+const firebaseConfig = {
+  apiKey: "AIzaSyA3T-3p0m-GV7a2vgdNNcLSmHjN_5Y8yGI",
+  authDomain: "deerika-smart-store-rdb.firebaseapp.com",
+  databaseURL: "https://deerika-smart-store-rdb-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "deerika-smart-store-rdb",
+  storageBucket: "deerika-smart-store-rdb.appspot.com",
+  messagingSenderId: "157472897205",
+  appId: "1:157472897205:web:18fc50ce3c1609a44fe6fc"
+};
+
+// Initialize Firebase
+const fb = firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the database service
+var database = fb.database();
+const dbRef = fb.database().ref();
+
+const usersRef = dbRef.child('dummydata');
+
+usersRef.child('customers/' + userID).once("value", snap => {
+  let user = snap.val();
+  if (snap.exists()) {
+    console.log("exists!");
+  } else {
+    console.log("not exists!");
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+    usersRef.child("customers/" + userID).set({
+      cartID: "4828392f2",
+      inTime: dateTime,
+      outTime: "--",
+      userID: userID,
+      status: "Active",
+    });
+  }
+  // for (const [key, value] of Object.entries(user)) {
+  //   console.log(key, value);
+  //   if (key == userID) {
+  //     console.log("User Present");
+  //   } else {
+  //     console.log("User Not Present");
+
+
+
+  //   }
+  // }
+  // if (user.userID == userID) {
+  //   console.log("User Present");
+  // } else {
+  //   console.log("User Not Present");
+  // }
+});
+
+
+
 if (userName != "") {
   nameElement.innerHTML = "Hi " + userName;
   console.log("dasdadasd");
@@ -16,10 +81,32 @@ if (userName != "") {
   localStorage.setItem("userMobile", userMobile);
 }
 walletBalElement.innerHTML = localStorage.getItem("walletBalance");
+const button = document.querySelector('button')
 
 function onFailure(message) {
   console.log("Connection Attempt to Host " + host + "Failed");
   setTimeout(MQTTconnect, reconnectTimeout);
+}
+
+async function fetchProductDetailsUsingBarcode(url = '', data) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    // mode: 'cors', // no-cors, *cors, same-origin
+    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    // credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Authorization': 'bearer ' + data,
+      'Content-Type': 'application/json',
+
+
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    // redirect: 'follow', // manual, *follow, error
+    // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    // body: JSON.stringify(data) // body data type must match "Content-Type" header
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
 }
 async function fetchProductDetails(url = '', data, body) {
   // Default options are marked with *
@@ -39,25 +126,32 @@ async function fetchProductDetails(url = '', data, body) {
   });
   return response.json(); // parses JSON response into native JavaScript objects
 }
-
+//admin/cart1/barcode
 function onMessageArrived(msg) {
   out_msg = "Message received " + msg.payloadString + "<br>";
   out_msg = out_msg + "Message received Topic " + msg.destinationName;
+  // console.log(msg.payloadString, msg.destinationName)
+  var common = msg.destinationName.split("/");
+  var devID = common[2];
+  var topic = common[3];
+  // console.log(topic, devID)
+  // console.log(common[0], common[1], common[2]);
 
-  if (msg.destinationName == "admin/cart1/added_weight") {
+  // console.log(topic, devID)
+  if (topic == "added_weight") {
     console.log(msg);
     var data = JSON.parse(msg.payloadString);
     var prodNumber = data.product_id;
     var quantity = data.quantity;
     var total = 55;
     // console.log("Yo ",prodNumber, quantity);
-    let obj = orderList.find((o, i) => {
-      if (o.id === prodNumber) {
+    let obj = orderList.find((o, i) => { //value, key
+      if (o.item_number === prodNumber) {
         console.log("Found!!");
         //Updating in OrderList
-        orderList[i].quantity = parseInt(o.quantity, 10) + parseInt(quantity, 10);
-        total = parseInt(o.mrp, 10) * parseInt(orderList[i].quantity, 10);
-        orderList[i].totalPrice = total;
+        orderList[i].fulfilled_quantity = parseInt(o.fulfilled_quantity, 10) + parseInt(quantity, 10);
+        total = parseInt(o.mrp, 10) * parseInt(orderList[i].fulfilled_quantity, 10);
+        orderList[i].item_total = total;
 
         // buildCartItem(orderList[i]);
         // console.log(o.quantity);
@@ -66,46 +160,47 @@ function onMessageArrived(msg) {
 
       // buildCartItem(orderList);
       $('.row').remove();
-      console.log("Removed");
+      // console.log("Removed");
 
       console.log(orderList);
       var cartTotal = 0;
       var savingsTotal = 0;
       orderList.forEach(function (order) {
 
-        if(parseInt(order.quantity,10) != 0){
+        if (parseInt(order.fulfilled_quantity, 10) != 0) {
           console.log("Building items");
 
           buildCartItem(order)
-          cartTotal = parseInt(order.totalPrice,10) + cartTotal;
-          savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
-        }
-        else{
+          cartTotal = parseInt(order.item_total, 10) + cartTotal;
+          savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.fulfilled_quantity, 10) + savingsTotal;
+        } else {
           console.log("Not Building for qty 0");
-          orderList.splice[i,1];
+          orderList.splice[i, 1];
 
-        } 
+        }
 
         // buildCartItem(order)
-        //  cartTotal = parseInt(order.totalPrice,10) + cartTotal;
+        //  cartTotal = parseInt(order.item_total,10) + cartTotal;
         //  savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
-         
+
       })
 
 
-      console.log("cart total -----",cartTotal, savingsTotal);
+      console.log("cart total -----", cartTotal, savingsTotal);
       document.getElementById("total").innerHTML = cartTotal;
       document.getElementById("savings").innerHTML = savingsTotal - cartTotal;
+      localStorage.setItem("cartSavings", savingsTotal - cartTotal)
       localStorage.setItem("totalCartBalance", cartTotal);
       // console.log("cart total",cartTotal, savingsTotal);
 
+      localStorage.setItem("items", JSON.stringify(orderList));
 
 
     });
     // {"label" : "patanjali-honey-500g“,”product_id”:”202442","total_cart_weight":"2994.651855","product_weight_from_sensor":"721.254150","product_weight_from_label":"1000”, “quantity”:”2”}
     // {"label" : "patanjali-honey-500g","product_id":"202442"}
     //{"label" : "bournvita-","product_id":"201352","total_cart_weight":"25.218994","product_weight_from_sensor":"502.397400","product_weight_from_label":"5000","quantity":"1"}
-  } else if (msg.destinationName == "admin/cart1/label") {
+  } else if (topic == "label") {
     //Check item if it exist in list
 
     console.log(out_msg);
@@ -114,7 +209,7 @@ function onMessageArrived(msg) {
     // data = String(data.label).split(":");
     console.log(data.label, data.product_id);
 
-
+    console.log("")
 
 
 
@@ -138,17 +233,42 @@ function onMessageArrived(msg) {
         var prodNumber = data.data.items[0].number;
         console.log(mrp, strikePrice);
         var singleObj = {}
-        singleObj['img'] = imgURL;
-        singleObj['name'] = productName;
+        // singleObj['img'] = imgURL;
+        // singleObj['name'] = productName;
+        // singleObj['star'] = ratings;
+        // singleObj['strikePrice'] = strikePrice;
+        // singleObj['mrp'] = mrp;
+        // singleObj['id'] = prodNumber;
+        // singleObj['quantity'] = 0;
+        // singleObj['weight'] = " ";
+
+
+
+        singleObj['image_url'] = imgURL;
+        singleObj['item_name'] = productName;
+        // singleObj['star'] = ratings;
+        // singleObj['strikePrice'] = strikePrice;
         singleObj['star'] = ratings;
         singleObj['strikePrice'] = strikePrice;
         singleObj['mrp'] = mrp;
-        singleObj['id'] = prodNumber;
-        singleObj['quantity'] = 0;
+
+        singleObj['unit_price'] = {
+          "asp": mrp,
+          "mrp": strikePrice
+        };
+        singleObj['item_number'] = prodNumber;
+        singleObj['fulfilled_quantity'] = 0;
         singleObj['weight'] = " ";
+        singleObj['hsn'] = data.data.items[0].hsn;
+        singleObj['tax'] = data.data.items[0].tax;
+        singleObj['item_varient'] = {};
+        singleObj['barcode'] = data.data.items[0].barcode[0].barcode;
+
+
+
 
         // return 
-        let obj = orderList.find(o => o.id === prodNumber);
+        let obj = orderList.find(o => o.item_number === prodNumber);
         console.log(obj);
 
         if (typeof obj === "undefined") {
@@ -160,7 +280,7 @@ function onMessageArrived(msg) {
           // orderList.forEach(function (order) {
           //   buildCartItem(order)
           // })
-
+          console.log(JSON.stringify(orderList));
         } else {
           console.log(" Item Already in List..Updating if requires")
 
@@ -176,7 +296,7 @@ function onMessageArrived(msg) {
     //   strikePrice: "₹50",
     //   mrp: "₹28",
     //   quantity: 2,
-    //   totalPrice: "₹56.00"
+    //   item_total: "₹56.00"
     // }
 
     // var listOfObjects = [];
@@ -189,32 +309,30 @@ function onMessageArrived(msg) {
     // });
 
 
-  } else if (msg.destinationName == "admin/cart1/removed_weight") {
+  } else if (topic == "removed_weight") {
     console.log(out_msg);
 
     var data = JSON.parse(msg.payloadString);
     var prodNumber = data.product_id;
     var quantity = data.quantity;
     let obj = orderList.find((o, i) => {
-      if (o.id === prodNumber) {
+      if (o.item_number === prodNumber) {
         console.log("Found!!");
         //Updating in OrderList
-        var initialQuantity = parseInt(o.quantity, 10);
-        if(initialQuantity > quantity){
-          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
+        var initialQuantity = parseInt(o.fulfilled_quantity, 10);
+        if (initialQuantity > quantity) {
+          orderList[i].fulfilled_quantity = initialQuantity - parseInt(quantity, 10);
 
+        } else {
+          orderList[i].fulfilled_quantity = initialQuantity - parseInt(quantity, 10);
         }
-        else {
-          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
-        }
-        total = parseInt(o.mrp, 10) * parseInt(orderList[i].quantity, 10);
-        orderList[i].totalPrice = total;
+        total = parseInt(o.mrp, 10) * parseInt(orderList[i].fulfilled_quantity, 10);
+        orderList[i].item_total = total;
 
         // buildCartItem(orderList[i]);
         // console.log(o.quantity);
         // stop searching
-      }
-      else{
+      } else {
         console.log("Product not found which is removed.");
       }
 
@@ -225,61 +343,295 @@ function onMessageArrived(msg) {
       console.log(orderList);
       var cartTotal = 0;
       var savingsTotal = 0;
-      orderList.forEach(function (order,i) {
-        if(parseInt(order.quantity,10) != 0){
+      orderList.forEach(function (order, i) {
+        if (parseInt(order.fulfilled_quantity, 10) != 0) {
           console.log("Building items");
 
           buildCartItem(order)
-          cartTotal = parseInt(order.totalPrice,10) + cartTotal;
-          savingsTotal = parseInt(order.strikePrice,10) * parseInt(order.quantity,10) + savingsTotal;
-        }
-        else{
+          cartTotal = parseInt(order.item_total, 10) + cartTotal;
+          savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.fulfilled_quantity, 10) + savingsTotal;
+        } else {
           console.log("Not Building for qty 0");
-          orderList.splice[i,1];
-
-        }         
+          orderList.splice[i, 1];
+        }
       })
 
 
-      console.log("cart total -----",cartTotal, savingsTotal);
+      console.log("cart total -----", cartTotal, savingsTotal);
       document.getElementById("total").innerHTML = cartTotal;
       document.getElementById("savings").innerHTML = savingsTotal - cartTotal;
       localStorage.setItem("totalCartBalance", cartTotal);
       // console.log("cart total",cartTotal, savingsTotal);
 
+      localStorage.setItem("items", JSON.stringify(orderList));
 
 
     });
+  } else if (topic == "na") {
+    console.log(out_msg);
+    if (msg.payloadString == "added") {
+      console.log("Please re-add the Item again");
+
+    } else if (msg.payloadString == "removed") {
+      console.log("Please remove the Item again");
+      // document.getElementById("ring").style.border = "purple";
+      // document.getElementById("cir").style.backgroundColor = "purple";
+      // button.disabled = true
+
+    }
+
+  } else if (msg.destinationName == "admin/cartv1/isstable") {
+    //   button.disabled = false
+    // button.disabled = false
+    // cir.style.backgroundColor = 'green';
+    toggleModal(2);
+    console.log(out_msg);
+    // if (msg.payloadString == "stable") {
+    //   console.log("Cart is stable");
+    //   cir.style.backgroundColor = 'green';
+    //   button.disabled = false
+
+
+    // } else if (msg.payloadString == "not-stable") {
+    //   console.log("Not stable");
+    //   // document.getElementById("ring").style.border = "purple";
+    //   // document.getElementById("cir").style.backgroundColor = "purple";
+    //   cir.style.backgroundColor = 'red';
+
+    //   button.disabled = true
+
+    // }
+
+
+  } else if (msg.destinationName == "admin/cartv1/notstable") {
+    //   button.disabled = false
+    // button.disabled = true
+    // cir.style.backgroundColor = 'red';
+    toggleModal(1);
+
+    console.log(out_msg);
+    // if (msg.payloadString == "stable") {
+    //   console.log("Cart is stable");
+    //   cir.style.backgroundColor = 'green';
+    //   button.disabled = false
+
+
+    // } else if (msg.payloadString == "not-stable") {
+    //   console.log("Not stable");
+    //   // document.getElementById("ring").style.border = "purple";
+    //   // document.getElementById("cir").style.backgroundColor = "purple";
+    //   cir.style.backgroundColor = 'red';
+
+    //   button.disabled = true
+
+    // }
+
+
+  } else if (topic == "updated_dict") {
+
+    var data = JSON.parse(msg.payloadString);
+    // var objectStringArray = (new Function("return [" + msg.payloadString + "];")());
+
+    console.log("heloooo", data);
+
+    updateFirebase(data);
+
+  } else if (topic == "r_label") {
+    // console.log("Hola");
+    // var data = JSON.parse(msg.payloadString);
+    // console.log(data.product_id);
+    // orderList.forEach(function (order, index) {
+    //   console.log(order.item_number);
+
+    //   if (order.item_number == data.product_id) {
+    //     console.log("remove this item ");
+    //     orderList.splice(index, 1);
+
+    //   }
+    // })
+    // orderList.forEach(function (order) {
+    //   buildCartItem(order);
+
+    // })
+    // console.log(orderList);
+
+  } else if (topic == "barcode") {
+
+    // var data = JSON.parse(msg.payloadString);
+    // console.log(data.ID);
+    // var bodyToSend = {}
+    // fetchProductDetailsUsingBarcode("http://api.djtretailers.com/collection/getsingleitem?search=barcode&value=" + data.ID, localStorage.getItem("UserToken"))
+    //   .then(data => {
+    //     console.log("Cart", data)
+    //     // var data = JSON.parse(data);
+    //     var productName = data.data[0].name;
+    //     var imgURL = data.data[0].images[0].url;
+    //     var ratings = data.data[0].rating;
+    //     var strikePrice = data.data[0].warehouses[0].MRP;
+    //     var mrp = data.data[0].warehouses[0].ASP;
+    //     var prodNumber = data.data[0].number;
+    //     var barcodeID = data.data[0].barcode[0].barcode;
+    //     console.log(mrp, strikePrice);
+    //     var singleObj = {}
+    //     singleObj['img'] = imgURL;
+    //     singleObj['name'] = productName;
+    //     singleObj['star'] = ratings;
+    //     singleObj['strikePrice'] = strikePrice;
+    //     singleObj['mrp'] = mrp;
+    //     singleObj['id'] = prodNumber;
+    //     singleObj['quantity'] = 1;
+    //     singleObj['weight'] = "";
+    //     singleObj['item_total'] = mrp;
+    //     singleObj['barcodeId'] = barcodeID;
+
+    //     // return 
+    //     let obj = orderListforBarcode.find(o => o.id === prodNumber);
+    //     console.log(obj);
+
+    //     if (typeof obj === "undefined") {
+    //       console.log("---->>>Adding Item in List")
+
+    //       orderListforBarcode.push(singleObj);
+    //       // buildCartItem(singleObj);
+
+    //     } else {
+    //       console.log(" Item Already in List..Updating if requires")
+    //       console.log(obj.quantity, quantity);
+    //       obj.quantity = parseInt(obj.quantity, 10) + 1;
+    //       total = parseInt(obj.mrp, 10) * parseInt(obj.quantity, 10);
+    //       obj.item_total = total;
+
+    //     }
+    //     $('.row').remove();
+
+
+    //     console.log(orderListforBarcode);
+    //     var cartTotal = 0;
+    //     var savingsTotal = 0;
+    //     orderListforBarcode.forEach(function (order, i) {
+    //       if (parseInt(order.quantity, 10) != 0) {
+    //         console.log("Building items");
+
+    //         buildCartItem(order)
+    //         cartTotal = parseInt(order.item_total, 10) + cartTotal;
+    //         savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.quantity, 10) + savingsTotal;
+    //       } else {
+    //         console.log("Not Building for qty 0");
+    //         orderListforBarcode.splice[i, 1];
+
+    //       }
+
+    //     })
+
+
+    //     console.log("cart total -----", cartTotal, savingsTotal);
+    //     document.getElementById("total").innerHTML = cartTotal;
+    //     document.getElementById("savings").innerHTML = savingsTotal - cartTotal;
+    //     localStorage.setItem("totalCartBalance", cartTotal);
+
+    //   })
+
+
+  } else if (topic == "added_weight_barcode") {
+    var data = JSON.parse(msg.payloadString);
+    console.log(data);
+  } else if (topic == "remove_weight_barcode") {
+    var data = JSON.parse(msg.payloadString);
+    console.log(data);
   }
-  else if(msg.destinationName == "admin/cart1/na"){
-      console.log(out_msg);
-      if(msg.payloadString == "added"){
-        alert("Please re-add the Item again");
-        
-      }
-      else if(msg.payloadString == "removed"){
-        alert("Please remove the Item again");
+  else if (msg.destinationName == "/beacons/office") {
+    var data = JSON.parse(msg.payloadString);
+    // console.log(data, data.e[0].r);
+    var rssi = parseInt(data.e[0].r, 10)
+    // console.log(rssi);
+    if (rssi >= -65) {
+      console.log("Cart is Near");
+      if (document.getElementById("disabled").disabled && onFlag == 1) {
+        // document.getElementById("disabled").disabled = false;
+        document.getElementById("cir").style.backgroundColor = "#FF0000";
+
+
+      } else {
+        document.getElementById("disabled").disabled = false;
+        document.getElementById("cir").style.backgroundColor = "#00FF00";
 
       }
-      
-  }
 
+
+    }
+    else {
+      console.log("Cart is Far");
+      document.getElementById("disabled").disabled = true;
+      document.getElementById("cir").style.backgroundColor = "#FF0000";
+
+    }
+  }
+}
+
+function updateFirebase(data) {
+  console.log("hola");
+  usersRef.child("customers/" + userID + "/orders").get().then((snapshot) => {
+    let user = snapshot.val();
+    if (snapshot.exists()) {
+      console.log(user);
+    } else {
+      console.log("No data available, Adding current data to firebase");
+      var index = 0
+      for (const [key, value] of Object.entries(data)) {
+        console.log(key, value);
+        usersRef.child("customers/" + userID + "/orders/" + index + "/").set({
+          itemID: value.product_name,
+          itemPrice: Math.floor(Math.random() * 100),
+          quantity: value.qty
+        });
+        index = index + 1;
+      }
+
+
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
 }
 
 function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
 
   console.log("Connected ");
-  mqtt.subscribe("admin/cart1/added_weight");
-  mqtt.subscribe("admin/cart1/label");
-  mqtt.subscribe("admin/cart1/removed_weight");
-  mqtt.subscribe("admin/cart1/na");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/added_weight");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/label");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/removed_weight");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/na");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/r_label");
+  mqtt.subscribe("admin/cartv1/isstable");
+  mqtt.subscribe("admin/cartv1/notstable");
+  mqtt.subscribe("/beacons/office");
+
+
+
+  // mqtt.subscribe("admin/cartv1/#");
+
 
 
   // message = new Paho.MQTT.Message("Hello World");
   // message.destinationName = "sensor2";
   // message.retained = true;
   // mqtt.send(message);
+  // var payload = {
+  //   "tok": token
+  // }
+  // message = new Paho.MQTT.Message(localStorage.getItem("UserToken"));
+  // message.destinationName = "admin/cartv1/token";
+  // message.retained = false;
+  // message.setQos(0);
+  mqtt.send("admin/cartv1/token", localStorage.getItem("UserToken"), 0, false);
+
+}
+
+function onConnectionLost(err) {
+  console.log("Connection Lost!!!", err);
+  MQTTconnect();
+
 }
 
 function MQTTconnect() {
@@ -294,13 +646,16 @@ function MQTTconnect() {
     onFailure: onFailure,
   };
   mqtt.onMessageArrived = onMessageArrived
+  mqtt.onConnectionLost = onConnectionLost;
 
   mqtt.connect(options); //connect
-  
+
 }
 
 const buildCartItem = function (order) {
   // Create elements needed to build a card
+
+
 
   const div1 = document.createElement("div");
   const div2 = document.createElement("div");
@@ -371,8 +726,8 @@ const buildCartItem = function (order) {
   _2p.setAttribute("class", "text-base 2xl:text-xl text-txt ml-3");
   strike.setAttribute("class", "text-gray-400");
   //Setting Data to cards
-  img.setAttribute("src", order.img);
-  _1h2.innerHTML = order.name;
+  img.setAttribute("src", order.image_url);
+  _1h2.innerHTML = order.item_name;
   // Adding Start/rating to element
   for (let i = 0; i < order.star; i++) {
     span.innerHTML = span.innerHTML + " &#x1F31F ";
@@ -381,13 +736,14 @@ const buildCartItem = function (order) {
   strike.innerHTML = order.mrp;
   _2p.innerHTML = order.strikePrice;
   _3h2.innerHTML = "Quantity: ";
-  _1h3.innerHTML = order.quantity;
+  _1h3.innerHTML = order.fulfilled_quantity;
   span2.innerHTML = "*";
   _2h3.innerHTML = order.mrp + " ";
   span3.innerHTML = " =";
-  _1h1.innerHTML = order.totalPrice;
+  _1h1.innerHTML = order.item_total;
 
-
+  localStorage.setItem("items", JSON.stringify(orderList));
+  console.log(JSON.stringify(orderList));
 }
 
 MQTTconnect();
@@ -397,7 +753,9 @@ MQTTconnect();
 
 
 //------------Fixed Header JS--------------//
-window.onscroll = function() {myFunction()};
+window.onscroll = function () {
+  myFunction()
+};
 
 // Get the header
 var header = document.getElementById("myHeader");
@@ -421,20 +779,46 @@ function myFunction() {
 fetch("./768.json").then(response => {
   return response.json();
 })
-.then (function(data){
-  const res = data;
-  console.log(res);
+  .then(function (data) {
+    const res = data;
+    console.log(res);
 
-  var element = {}, cart = [];
+    var element = {},
+      cart = [];
 
 
-  Object.entries(res).forEach((entry) => {
-    const [key, value] = entry;
-    // element.id = value;
-    // element.quantity = key;
-    // cart.push({element: element});
-    // console.log(cart);
-    console.log(value.name);
-  });    
+    Object.entries(res).forEach((entry) => {
+      const [key, value] = entry;
+      // element.id = value;
+      // element.quantity = key;
+      // cart.push({element: element});
+      // console.log(cart);
+      console.log(value.name);
+    });
 
-});
+  });
+
+
+var modal = document.querySelector(".modal");
+
+function toggleModal(val) {
+  if (val == 1 && offFlag == 1 && onFlag == 0) {
+    modal.classList.toggle("show-modal");
+    onFlag = 1;
+    document.getElementById("disabled").disabled = true;
+
+  }
+  else if (val == 2 && onFlag == 1) {
+    modal.classList.toggle("show-modal");
+    offFlag = 1;
+    onFlag = 0;
+    document.getElementById("disabled").disabled = false;
+
+  }
+}
+
+// function windowOnClick(event) {
+//   if (event.target === modal) {
+//   }
+// }
+
