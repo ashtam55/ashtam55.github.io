@@ -16,16 +16,27 @@ var orderListforBarcode = [];
 // cir.style.backgroundColor = 'red';
 var onFlag = 0;
 var offFlag = 1;
+//Deeriak Config
+// const firebaseConfig = {
+//   apiKey: "AIzaSyA3T-3p0m-GV7a2vgdNNcLSmHjN_5Y8yGI",
+//   authDomain: "deerika-smart-store-rdb.firebaseapp.com",
+//   databaseURL: "https://deerika-smart-store-rdb-default-rtdb.asia-southeast1.firebasedatabase.app",
+//   projectId: "deerika-smart-store-rdb",
+//   storageBucket: "deerika-smart-store-rdb.appspot.com",
+//   messagingSenderId: "157472897205",
+//   appId: "1:157472897205:web:18fc50ce3c1609a44fe6fc"
+// };
+//Nitin Config
 const firebaseConfig = {
-  apiKey: "AIzaSyA3T-3p0m-GV7a2vgdNNcLSmHjN_5Y8yGI",
-  authDomain: "deerika-smart-store-rdb.firebaseapp.com",
-  databaseURL: "https://deerika-smart-store-rdb-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "deerika-smart-store-rdb",
-  storageBucket: "deerika-smart-store-rdb.appspot.com",
-  messagingSenderId: "157472897205",
-  appId: "1:157472897205:web:18fc50ce3c1609a44fe6fc"
+  apiKey: "AIzaSyDp-KZ6mW40EPpy48kYqg2mcxjL8olzi7E",
+  authDomain: "dashboard-57331.firebaseapp.com",
+  databaseURL: "https://dashboard-57331-default-rtdb.firebaseio.com",
+  projectId: "dashboard-57331",
+  storageBucket: "dashboard-57331.appspot.com",
+  messagingSenderId: "978966435775",
+  appId: "1:978966435775:web:c5890ce905495f4894330a"
 };
-
+console.log("OrderID, ", localStorage.getItem("orderId"));
 // Initialize Firebase
 const fb = firebase.initializeApp(firebaseConfig);
 
@@ -149,6 +160,7 @@ function onMessageArrived(msg) {
       if (o.item_number === prodNumber) {
         console.log("Found!!");
         //Updating in OrderList
+        orderList[i].quantity = parseInt(o.fulfilled_quantity, 10) + parseInt(quantity, 10);
         orderList[i].fulfilled_quantity = parseInt(o.fulfilled_quantity, 10) + parseInt(quantity, 10);
         total = parseInt(o.mrp, 10) * parseInt(orderList[i].fulfilled_quantity, 10);
         orderList[i].item_total = total;
@@ -194,6 +206,8 @@ function onMessageArrived(msg) {
       // console.log("cart total",cartTotal, savingsTotal);
 
       localStorage.setItem("items", JSON.stringify(orderList));
+
+      updateFb(orderList);
 
 
     });
@@ -246,6 +260,12 @@ function onMessageArrived(msg) {
 
         singleObj['image_url'] = imgURL;
         singleObj['item_name'] = productName;
+        //To be removed
+        singleObj['itemID'] = productName;
+        singleObj['itemPrice'] = mrp;
+        singleObj['quantity'] = 0;
+
+
         // singleObj['star'] = ratings;
         // singleObj['strikePrice'] = strikePrice;
         singleObj['star'] = ratings;
@@ -263,6 +283,7 @@ function onMessageArrived(msg) {
         singleObj['tax'] = data.data.items[0].tax;
         singleObj['item_varient'] = {};
         singleObj['barcode'] = data.data.items[0].barcode[0].barcode;
+
 
 
 
@@ -322,9 +343,13 @@ function onMessageArrived(msg) {
         var initialQuantity = parseInt(o.fulfilled_quantity, 10);
         if (initialQuantity > quantity) {
           orderList[i].fulfilled_quantity = initialQuantity - parseInt(quantity, 10);
+          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
+
 
         } else {
           orderList[i].fulfilled_quantity = initialQuantity - parseInt(quantity, 10);
+          orderList[i].quantity = initialQuantity - parseInt(quantity, 10);
+
         }
         total = parseInt(o.mrp, 10) * parseInt(orderList[i].fulfilled_quantity, 10);
         orderList[i].item_total = total;
@@ -367,6 +392,8 @@ function onMessageArrived(msg) {
 
 
     });
+    updateFb(orderList);
+
   } else if (topic == "na") {
     console.log(out_msg);
     if (msg.payloadString == "added") {
@@ -432,9 +459,11 @@ function onMessageArrived(msg) {
     var data = JSON.parse(msg.payloadString);
     // var objectStringArray = (new Function("return [" + msg.payloadString + "];")());
 
-    console.log("heloooo", data);
+    // console.log("heloooo", data);
 
-    updateFirebase(data);
+    // udpateCurrentLocalList(data);
+
+    // updateFirebase(data);
 
   } else if (topic == "r_label") {
     // console.log("Hola");
@@ -593,12 +622,27 @@ function updateFirebase(data) {
     console.error(error);
   });
 }
-
+function udpateCurrentLocalList(obj) {
+  console.log("In Loop for check current ")
+  Object.entries(obj).forEach((entry) => {
+    const [key, value] = entry;
+    console.log(`${key}: ${value}`);
+  });
+  // for (var key in obj) {
+  //   if (obj.hasOwnProperty(key)) {
+  //     var val = obj[key];
+  //     console.log(val);
+  //     udpateCurrentLocalList(val);
+  //   }
+  // }
+}
 function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
 
   console.log("Connected ");
   mqtt.subscribe("admin/cartv1/48b02d5f84a6/added_weight");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/updated_dict");
+
   mqtt.subscribe("admin/cartv1/48b02d5f84a6/label");
   mqtt.subscribe("admin/cartv1/48b02d5f84a6/removed_weight");
   mqtt.subscribe("admin/cartv1/48b02d5f84a6/na");
@@ -822,3 +866,18 @@ function toggleModal(val) {
 //   }
 // }
 
+
+function updateFb(orderList) {
+  // var order = {};
+  // orderList.forEach((value, key) => {
+  //   // const [key, value] = entry;
+  //   // console.log("FB --", key, value, value.id);
+  //   var id = key;
+  //   order[id] = key;
+  //   order["itemID"] = value.item_name
+  // })
+  // console.log("Push -----", order);
+  usersRef.child('customers/' + userID).update({
+    orders: orderList
+  });
+}

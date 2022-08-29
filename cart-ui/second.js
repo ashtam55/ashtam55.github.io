@@ -84,6 +84,8 @@ if (userName != "") {
 if (userMobile != "") {
   localStorage.setItem("userMobile", userMobile);
 }
+localStorage.setItem("email", JSON.parse(json).data.email);
+
 
 http://192.168.1.192:85/api/user_collection
 
@@ -92,7 +94,8 @@ generatingToken('http://api.djtretailers.com/smartauth/toke-generator/', JSON.pa
   .then(data => {
     console.log(data); // JSON data parsed by `data.json()` call
     user_collection("http://192.168.1.192:85/api/user_collection", data).then(data => {
-      console.log(data.order_id); localStorage.setItem("orderId", data.order_id)
+      console.log(data.order_id);
+      localStorage.setItem("orderId", data.order_id)
     })
     console.log(data.access_token); // JSON data parsed by `data.json()` call
     localStorage.setItem("UserToken", data.access_token);
@@ -105,5 +108,8 @@ generatingToken('http://api.djtretailers.com/smartauth/toke-generator/', JSON.pa
     console.log("HELO", data.data.amount.wallet); // JSON data parsed by `data.json()` call
     // console.log("WAllet", );
     localStorage.setItem("walletBalance", data.data.amount.wallet)
-    window.location.href = "cart.html";
+    setTimeout(function () {
+      window.location.href = "cart.html";
+
+    }, 2000);
   })

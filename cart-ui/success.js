@@ -5,6 +5,28 @@ var userName = localStorage.getItem("userName");
 var walletBalance = localStorage.getItem("walletBalance");
 var deductedWalBal = localStorage.getItem("totalCartBalance");
 var totalSavings = localStorage.getItem("cartSavings");
+var userID = localStorage.getItem("UserId");
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDp-KZ6mW40EPpy48kYqg2mcxjL8olzi7E",
+  authDomain: "dashboard-57331.firebaseapp.com",
+  databaseURL: "https://dashboard-57331-default-rtdb.firebaseio.com",
+  projectId: "dashboard-57331",
+  storageBucket: "dashboard-57331.appspot.com",
+  messagingSenderId: "978966435775",
+  appId: "1:978966435775:web:c5890ce905495f4894330a"
+};
+// Initialize Firebase
+const fb = firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the database service
+var database = fb.database();
+const dbRef = fb.database().ref();
+
+const usersRef = dbRef.child('dummydata');
+
+
+
 
 if (userName != "") {
   nameElement.innerHTML = "Hi " + userName;
@@ -51,16 +73,20 @@ async function pushDataToSap(url = '', body) {
 }
 
 var jsonItems = JSON.parse(localStorage.getItem("items"));
-
+console.log(jsonItems)
 jsonItems.forEach(function (order, index) {
 
   console.log(index);
   // index = index + 1;
-  delete jsonItems[1].mrp;
-  delete jsonItems[1].strikePrice;
-  delete jsonItems[1].weight;
-  delete jsonItems[1].star;
-  jsonItems[1].barcode = "283129";
+  delete jsonItems[index].mrp;
+  delete jsonItems[index].strikePrice;
+  delete jsonItems[index].weight;
+  delete jsonItems[index].star;
+  delete jsonItems[index].itemID;
+  delete jsonItems[index].itemPrice;
+  delete jsonItems[index].quantity;
+
+  jsonItems[index].barcode = "283129";
 
 
   if (order.fulfilled_quantity == 0) {
@@ -132,6 +158,14 @@ if (!isEmpty) {
   pushDataToSap("http://192.168.1.192:85/api/order_collection", bodyToSend)
     .then(data => {
       console.log(data);
+      var today = new Date();
+      var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      var dateTime = date + ' ' + time;
+      usersRef.child('customers/' + userID).update({
+        outTime: dateTime
+      });
+      localStorage.clear()
     })
 } else {
   console.log("Cart Is Empty Not pushing to SAP");
