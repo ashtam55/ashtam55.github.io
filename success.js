@@ -163,7 +163,8 @@ if (!isEmpty) {
       var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       var dateTime = date + ' ' + time;
       usersRef.child('customers/' + userID).update({
-        outTime: dateTime
+        outTime: dateTime,
+        status: "Inactive"
       });
       localStorage.clear()
     })

@@ -179,7 +179,7 @@ function onMessageArrived(msg) {
       var savingsTotal = 0;
       orderList.forEach(function (order) {
 
-        if (parseInt(order.fulfilled_quantity, 10) != 0) {
+        if (parseInt(order.fulfilled_quantity, 10) > 0) {
           console.log("Building items");
 
           buildCartItem(order)
@@ -369,7 +369,7 @@ function onMessageArrived(msg) {
       var cartTotal = 0;
       var savingsTotal = 0;
       orderList.forEach(function (order, i) {
-        if (parseInt(order.fulfilled_quantity, 10) != 0) {
+        if (parseInt(order.fulfilled_quantity, 10) > 0) {
           console.log("Building items");
 
           buildCartItem(order)
@@ -651,6 +651,8 @@ function onConnect() {
   mqtt.subscribe("admin/cartv1/notstable");
   mqtt.subscribe("/beacons/office");
 
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/addFromAdmin");
+  mqtt.subscribe("admin/cartv1/48b02d5f84a6/addFromAdmin");
 
 
   // mqtt.subscribe("admin/cartv1/#");
@@ -851,12 +853,19 @@ function toggleModal(val) {
     onFlag = 1;
     document.getElementById("disabled").disabled = true;
 
+    usersRef.child('customers/' + userID).update({
+      status: "Not-stable"
+    });
+
   }
   else if (val == 2 && onFlag == 1) {
     modal.classList.toggle("show-modal");
     offFlag = 1;
     onFlag = 0;
     document.getElementById("disabled").disabled = false;
+    usersRef.child('customers/' + userID).update({
+      status: "Active"
+    });
 
   }
 }
@@ -881,3 +890,26 @@ function updateFb(orderList) {
     orders: orderList
   });
 }
+
+// setInterval(() => {
+
+//   Object.entries(orderList).forEach((entry) => {
+//     const [key, value] = entry;
+//     // element.id = value;
+//     // element.quantity = key;
+//     // cart.push({element: element});
+//     // console.log(cart);
+//     if (value.fulfilled_quantity <= 0) {
+//       console.log(value.item_name);
+
+//       delete orderList[key];
+
+//     }
+//   });
+//   $('.row').remove();
+
+//   orderList.forEach(function (order) {
+//     buildCartItem(order)
+
+//   })
+// }, 5000);
