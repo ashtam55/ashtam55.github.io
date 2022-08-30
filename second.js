@@ -90,7 +90,7 @@ localStorage.setItem("email", JSON.parse(json).data.email);
 http://192.168.1.192:85/api/user_collection
 
 div.innerHTML = "Generating Token";
-generatingToken('http://api.djtretailers.com/smartauth/toke-generator/', JSON.parse(json))
+generatingToken('https://api.djtretailers.com/smartauth/toke-generator/', JSON.parse(json))
   .then(data => {
     console.log(data); // JSON data parsed by `data.json()` call
     user_collection("http://192.168.1.192:85/api/user_collection", data).then(data => {
@@ -99,7 +99,7 @@ generatingToken('http://api.djtretailers.com/smartauth/toke-generator/', JSON.pa
     })
     console.log(data.access_token); // JSON data parsed by `data.json()` call
     localStorage.setItem("UserToken", data.access_token);
-    var url = 'http://dev.djtretailers.com/v2/wallet/admin/mobile?mobile=' + userMobile
+    var url = 'https://dev.djtretailers.com/v2/wallet/admin/mobile?mobile=' + userMobile
     div.innerHTML = "Fetching Wallet Balance";
     return fetchWallet(url, data.access_token);
 
