@@ -17,25 +17,25 @@ var orderListforBarcode = [];
 var onFlag = 0;
 var offFlag = 1;
 //Deeriak Config
-// const firebaseConfig = {
-//   apiKey: "AIzaSyA3T-3p0m-GV7a2vgdNNcLSmHjN_5Y8yGI",
-//   authDomain: "deerika-smart-store-rdb.firebaseapp.com",
-//   databaseURL: "https://deerika-smart-store-rdb-default-rtdb.asia-southeast1.firebasedatabase.app",
-//   projectId: "deerika-smart-store-rdb",
-//   storageBucket: "deerika-smart-store-rdb.appspot.com",
-//   messagingSenderId: "157472897205",
-//   appId: "1:157472897205:web:18fc50ce3c1609a44fe6fc"
-// };
-//Nitin Config
 const firebaseConfig = {
-  apiKey: "AIzaSyDp-KZ6mW40EPpy48kYqg2mcxjL8olzi7E",
-  authDomain: "dashboard-57331.firebaseapp.com",
-  databaseURL: "https://dashboard-57331-default-rtdb.firebaseio.com",
-  projectId: "dashboard-57331",
-  storageBucket: "dashboard-57331.appspot.com",
-  messagingSenderId: "978966435775",
-  appId: "1:978966435775:web:c5890ce905495f4894330a"
+  apiKey: "AIzaSyA3T-3p0m-GV7a2vgdNNcLSmHjN_5Y8yGI",
+  authDomain: "deerika-smart-store-rdb.firebaseapp.com",
+  databaseURL: "https://deerika-smart-store-rdb-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "deerika-smart-store-rdb",
+  storageBucket: "deerika-smart-store-rdb.appspot.com",
+  messagingSenderId: "157472897205",
+  appId: "1:157472897205:web:18fc50ce3c1609a44fe6fc"
 };
+//Nitin Config
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDp-KZ6mW40EPpy48kYqg2mcxjL8olzi7E",
+//   authDomain: "dashboard-57331.firebaseapp.com",
+//   databaseURL: "https://dashboard-57331-default-rtdb.firebaseio.com",
+//   projectId: "dashboard-57331",
+//   storageBucket: "dashboard-57331.appspot.com",
+//   messagingSenderId: "978966435775",
+//   appId: "1:978966435775:web:c5890ce905495f4894330a"
+// };
 console.log("OrderID, ", localStorage.getItem("orderId"));
 // Initialize Firebase
 const fb = firebase.initializeApp(firebaseConfig);
@@ -45,7 +45,7 @@ var database = fb.database();
 const dbRef = fb.database().ref();
 
 const usersRef = dbRef.child('dummydata');
-
+console.log("daya");
 usersRef.child('customers/' + userID).once("value", snap => {
   let user = snap.val();
   if (snap.exists()) {
@@ -138,6 +138,7 @@ async function fetchProductDetails(url = '', data, body) {
   return response.json(); // parses JSON response into native JavaScript objects
 }
 //admin/cart1/barcode
+var dataForModal = {};
 function onMessageArrived(msg) {
   out_msg = "Message received " + msg.payloadString + "<br>";
   out_msg = out_msg + "Message received Topic " + msg.destinationName;
@@ -208,6 +209,10 @@ function onMessageArrived(msg) {
       localStorage.setItem("items", JSON.stringify(orderList));
 
       updateFb(orderList);
+
+      modal.classList.remove("show-modal");
+      onFlag = 0;
+      offFlag = 1;
 
 
     });
@@ -285,7 +290,11 @@ function onMessageArrived(msg) {
         singleObj['barcode'] = data.data.items[0].barcode[0].barcode;
 
 
-
+        dataForModal = {
+          "name": productName,
+          "imglink": imgURL
+        }
+        // console.log("asd", dataForModal)
 
 
         // return 
@@ -306,7 +315,10 @@ function onMessageArrived(msg) {
           console.log(" Item Already in List..Updating if requires")
 
         }
+        toggleModal(3, dataForModal)
       })
+
+
 
     // {
     //   id: 4,
@@ -407,7 +419,7 @@ function onMessageArrived(msg) {
 
     }
 
-  } else if (msg.destinationName == "admin/cartv1/isstable") {
+  } else if (msg.destinationName == "admin/cartv1/e45f01090250/isstable") {
     //   button.disabled = false
     // button.disabled = false
     // cir.style.backgroundColor = 'green';
@@ -430,13 +442,14 @@ function onMessageArrived(msg) {
     // }
 
 
-  } else if (msg.destinationName == "admin/cartv1/notstable") {
+  } else if (msg.destinationName == "admin/cartv1/e45f01090250/notstable") {
     //   button.disabled = false
     // button.disabled = true
     // cir.style.backgroundColor = 'red';
-    toggleModal(1);
+    console.log("Not stable topic called");
+    toggleModal(1, msg.payloadString);
 
-    console.log(out_msg);
+    // console.log("Not Stable payload msg-->", out_msg);
     // if (msg.payloadString == "stable") {
     //   console.log("Cart is stable");
     //   cir.style.backgroundColor = 'green';
@@ -485,6 +498,112 @@ function onMessageArrived(msg) {
     // console.log(orderList);
 
   } else if (topic == "barcode") {
+
+    console.log("In Barcode Topic");
+    //removing colon from string
+    var data = JSON.parse(msg.payloadString);
+    // data = String(data.label).split(":");
+    console.log(data.barcode);
+
+    console.log("")
+
+
+
+
+
+    // var bodyToSend = {
+    //   "export": false,
+    //   "search": "barcode",
+    //   "value": data.barcode,
+    //   "warehouse": "STR01"
+    // }
+    fetchProductDetailsUsingBarcode("http://api.djtretailers.com/collection/getsingleitem?search=barcode&value=" + data.barcode, localStorage.getItem("UserToken"))
+      .then(data => {
+        console.log(data);
+        // console.log(data.data.items[0].rating); // JSON data parsed by `data.json()` call
+        //name, imageUrl, ratings, strikePrice, MRP
+        // var productName = data.data.items[0].name;
+        // var imgURL = data.data.items[0].images[0].url;
+        // var ratings = data.data.items[0].rating;
+        // var strikePrice = data.data.items[0].warehouses.MRP;
+        // var mrp = data.data.items[0].warehouses.ASP;
+        // var prodNumber = data.data.items[0].number;
+
+        var productName = data.data[0].name;
+        var imgURL = data.data[0].images[0].url;
+        var ratings = data.data[0].rating;
+        var strikePrice = data.data[0].warehouses[0].MRP;
+        var mrp = data.data[0].warehouses[0].ASP;
+        var prodNumber = data.data[0].number;
+
+
+        console.log(mrp, strikePrice);
+        var singleObj = {}
+        // singleObj['img'] = imgURL;
+        // singleObj['name'] = productName;
+        // singleObj['star'] = ratings;
+        // singleObj['strikePrice'] = strikePrice;
+        // singleObj['mrp'] = mrp;
+        // singleObj['id'] = prodNumber;
+        // singleObj['quantity'] = 0;
+        // singleObj['weight'] = " ";
+
+
+
+        singleObj['image_url'] = imgURL;
+        singleObj['item_name'] = productName;
+        //To be removed
+        singleObj['itemID'] = productName;
+        singleObj['itemPrice'] = mrp;
+        singleObj['quantity'] = 0;
+
+
+        // singleObj['star'] = ratings;
+        // singleObj['strikePrice'] = strikePrice;
+        singleObj['star'] = ratings;
+        singleObj['strikePrice'] = strikePrice;
+        singleObj['mrp'] = mrp;
+
+        singleObj['unit_price'] = {
+          "asp": mrp,
+          "mrp": strikePrice
+        };
+        singleObj['item_number'] = prodNumber;
+        singleObj['fulfilled_quantity'] = 0;
+        singleObj['weight'] = " ";
+        singleObj['hsn'] = data.data[0].hsn;
+        singleObj['tax'] = data.data[0].tax;
+        singleObj['item_varient'] = {};
+        singleObj['barcode'] = data.data[0].barcode[0].barcode;
+
+
+        dataForModal = {
+          "name": productName,
+          "imglink": imgURL
+        }
+        // console.log("asd", dataForModal)
+
+
+        // return 
+        let obj = orderList.find(o => o.item_number === prodNumber);
+        console.log(obj);
+
+        if (typeof obj === "undefined") {
+          console.log("---->>>Adding Item in List")
+
+          orderList.push(singleObj);
+          buildCartItem(singleObj);
+          // orderList = [];
+          // orderList.forEach(function (order) {
+          //   buildCartItem(order)
+          // })
+          console.log(JSON.stringify(orderList));
+        } else {
+          console.log(" Item Already in List..Updating if requires")
+
+        }
+        toggleModal(3, dataForModal)
+      })
 
     // var data = JSON.parse(msg.payloadString);
     // console.log(data.ID);
@@ -640,19 +759,55 @@ function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
 
   console.log("Connected ");
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/added_weight");
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/updated_dict");
+  //Syed Systems
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/added_weight");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/updated_dict");
 
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/label");
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/removed_weight");
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/na");
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/r_label");
-  mqtt.subscribe("admin/cartv1/isstable");
-  mqtt.subscribe("admin/cartv1/notstable");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/label");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/barcode");
+
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/removed_weight");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/na");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/r_label");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/isstable");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/notstable");
+  // mqtt.subscribe("/beacons/office");
+
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/addFromAdmin");
+  // mqtt.subscribe("admin/cartv1/0c7a15c97606/addFromAdmin");
+
+  //Kali System e45f01090250
+
+  mqtt.subscribe("admin/cartv1/e45f01090250/added_weight");
+  mqtt.subscribe("admin/cartv1/e45f01090250/updated_dict");
+
+  mqtt.subscribe("admin/cartv1/e45f01090250/label");
+  mqtt.subscribe("admin/cartv1/e45f01090250/barcode");
+
+  mqtt.subscribe("admin/cartv1/e45f01090250/removed_weight");
+  mqtt.subscribe("admin/cartv1/e45f01090250/na");
+  mqtt.subscribe("admin/cartv1/e45f01090250/r_label");
+  mqtt.subscribe("admin/cartv1/e45f01090250/isstable");
+  mqtt.subscribe("admin/cartv1/e45f01090250/notstable");
   mqtt.subscribe("/beacons/office");
 
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/addFromAdmin");
-  mqtt.subscribe("admin/cartv1/48b02d5f84a6/addFromAdmin");
+  mqtt.subscribe("admin/cartv1/e45f01090250/addFromAdmin");
+  mqtt.subscribe("admin/cartv1/e45f01090250/addFromAdmin");
+
+
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/added_weight");
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/updated_dict");
+
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/label");
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/removed_weight");
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/na");
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/r_label");
+  // mqtt.subscribe("admin/cartv1/isstable");
+  // mqtt.subscribe("admin/cartv1/notstable");
+  // mqtt.subscribe("/beacons/office");
+
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/addFromAdmin");
+  // mqtt.subscribe("admin/cartv1/48b02d5f84a6/addFromAdmin");
 
 
   // mqtt.subscribe("admin/cartv1/#");
@@ -667,10 +822,10 @@ function onConnect() {
   //   "tok": token
   // }
   // message = new Paho.MQTT.Message(localStorage.getItem("UserToken"));
-  // message.destinationName = "admin/cartv1/token";
+  // message.destinationName = "admin/cartv1/e45f01090250/token";
   // message.retained = false;
   // message.setQos(0);
-  mqtt.send("admin/cartv1/token", localStorage.getItem("UserToken"), 0, false);
+  mqtt.send("admin/cartv1/e45f01090250/token", localStorage.getItem("UserToken"), 0, false);
 
 }
 
@@ -683,7 +838,7 @@ function onConnectionLost(err) {
 function MQTTconnect() {
   console.log("connecting to " + host + " " + port);
   var x = Math.floor(Math.random() * 10000);
-  var cname = "CartID -" + x;
+  var cname = "CartID - Cartjs" + x;
   mqtt = new Paho.MQTT.Client(host, port, cname);
   //document.write("connecting to "+ host);
   var options = {
@@ -789,7 +944,7 @@ const buildCartItem = function (order) {
   _1h1.innerHTML = order.item_total;
 
   localStorage.setItem("items", JSON.stringify(orderList));
-  console.log(JSON.stringify(orderList));
+  // console.log(JSON.stringify(orderList));
 }
 
 MQTTconnect();
@@ -847,9 +1002,13 @@ fetch("./768.json").then(response => {
 
 var modal = document.querySelector(".modal");
 
-function toggleModal(val) {
-  if (val == 1 && offFlag == 1 && onFlag == 0) {
-    modal.classList.toggle("show-modal");
+function toggleModal(val, prodData) {
+  console.log(val, prodData, offFlag, onFlag);
+  if (val == 1 && offFlag == 1) {
+    console.log("Not stable triggered");
+    modal.classList.add("show-modal");
+    $('.modal-content').text(prodData);
+
     onFlag = 1;
     document.getElementById("disabled").disabled = true;
 
@@ -858,8 +1017,8 @@ function toggleModal(val) {
     });
 
   }
-  else if (val == 2 && onFlag == 1) {
-    modal.classList.toggle("show-modal");
+  else if (val == 2) {
+    modal.classList.remove("show-modal");
     offFlag = 1;
     onFlag = 0;
     document.getElementById("disabled").disabled = false;
@@ -867,6 +1026,19 @@ function toggleModal(val) {
       status: "Active"
     });
 
+  }
+  else if (val == 3) {
+    console.log("product modal", prodData);
+    modal.classList.add("show-modal");
+    onFlag = 0;
+    offFlag = 1;
+    $('.modal-content').text(prodData.name);
+    $('.modal-content').append("<img src='" + prodData.imglink + "' />");//
+    $('.modal-content').append("<h1 style='padding-left:70px;'>Waiting to Add</h1><div class='loader'></div>");
+    $('.modal-content').append("");
+    // setTimeout(function () {
+    //   modal.classList.toggle("show-modal");
+    // }, 5000)
   }
 }
 
@@ -891,25 +1063,36 @@ function updateFb(orderList) {
   });
 }
 
-// setInterval(() => {
+setInterval(() => {
 
-//   Object.entries(orderList).forEach((entry) => {
-//     const [key, value] = entry;
-//     // element.id = value;
-//     // element.quantity = key;
-//     // cart.push({element: element});
-//     // console.log(cart);
-//     if (value.fulfilled_quantity <= 0) {
-//       console.log(value.item_name);
+  Object.entries(orderList).forEach((entry) => {
+    const [key, value] = entry;
+    // element.id = value;
+    // element.quantity = key;
+    // cart.push({element: element});
+    // console.log(cart);
+    if (value.fulfilled_quantity < 0) {
+      console.log(value.item_name);
+      value.fulfilled_quantity = 0;
+      value.quantity = 0
+      // delete orderList[key];
 
-//       delete orderList[key];
+    }
+  });
+  $('.row').remove();
 
-//     }
-//   });
-//   $('.row').remove();
+  orderList.forEach(function (order, i) {
+    // buildCartItem(order)
 
-//   orderList.forEach(function (order) {
-//     buildCartItem(order)
+    if (parseInt(order.fulfilled_quantity, 10) > 0) {
+      // console.log("Building items");
 
-//   })
-// }, 5000);
+      buildCartItem(order)
+      // cartTotal = parseInt(order.item_total, 10) + cartTotal;
+      // savingsTotal = parseInt(order.strikePrice, 10) * parseInt(order.fulfilled_quantity, 10) + savingsTotal;
+    } else {
+      // console.log("Not Building for qty 0");
+      orderList.splice[i, 1];
+    }
+  })
+}, 5000);

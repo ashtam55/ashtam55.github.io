@@ -8,14 +8,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
+  <!-- <script src="https://unpkg.com/html5-qrcode"></script> -->
   <title>Smart Cart</title>
 </head>
 
 <body>
   <div class="container" style="margin-top: 2%">
+    <h1 class="text-txt text-4xl font-semibold text-opacity-10 text-txt-light mb-8">
+      Welcome to Deerika Smart Cart
+    </h1>
     <h3 class="text-txt text-base font-semibold 2xl:text-xl text-opacity-10 text-txt-light mb-8">
-      Scan QR Code
+      Please Scan QR Code
     </h3>
     <div class="canvas">
       <div id="qr-reader" style="width:500px"></div>
@@ -40,7 +43,7 @@
           2
         </div>
         <p class="text-base font-semibold text-opacity-50 2xl:text-xl text-txt-light">
-          Show that QR Code on this tablet screen.
+          Show QR code on Smart Cart reader.
         </p>
       </div>
 
@@ -56,6 +59,7 @@
     </div>
   </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
 
 <script type="text/javascript" src="index.js"></script>
 
